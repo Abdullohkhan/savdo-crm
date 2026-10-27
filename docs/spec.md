@@ -97,13 +97,25 @@ Til: standart **o'zbekcha (lotin)**, sozlamada **inglizcha** va **ruscha**ga alm
 
 ---
 
-## 6. Taklif qilingan stack
+## 6. Stack (2026-10-27 tasdiqlangan)
 
-- Frontend: React + Vite + TypeScript, MUI, TanStack Query.
-- Backend: NestJS 11 + Prisma + PostgreSQL (sizning boshqa loyihalaringizdagi stack).
-- Bildirishnoma: grammY Telegram bot.
-- PDF: HTML shablon → PDF.
-- Deploy: Docker Compose + Caddy (VPS'da).
+**Frontend (`apps/web`)**
+- React + Vite + TypeScript
+- **Tailwind CSS** — asosiy dizayn; tayyor komponentlar uchun **shadcn/ui** (Radix asosida, Tailwind bilan bir xil uslub). MUI faqat Tailwind/shadcn'da yo'q murakkab komponent kerak bo'lsa (masalan, katta jadval) — va faqat kelishib olingandan keyin.
+- **Dark / Light / System** rejim: Tailwind `dark` klassi, tanlov saqlanadi, sahifa ochilganda miltillamaydi.
+- State: **Redux Toolkit** (auth, til, tema, UI holati) + **RTK Query** (API so'rovlari, kesh).
+- React Router, React Hook Form + Zod, react-i18next (uz standart, en, ru).
+
+**Backend (`apps/api`)**
+- NestJS + Prisma + PostgreSQL. JWT (access + httpOnly refresh cookie), argon2.
+
+**Umumiy (`packages/shared`)**
+- Zod sxemalar, enumlar (rollar, statuslar) — frontend va backend bitta manbadan foydalanadi.
+
+**Boshqa**
+- pnpm workspaces monorepo, ESLint + Prettier, Vitest, GitHub Actions CI.
+- Bildirishnoma: grammY Telegram bot (4-bosqich). PDF: HTML shablon → PDF (4-bosqich).
+- Deploy: Docker Compose + Caddy (6-bosqich).
 
 Mahalliy kompyuter kuchsiz (4 GB), shuning uchun ishlab chiqish asosan bulutdagi Claude Code sessiyalarida (GitHub repo orqali), sinov esa telefondan brauzerda bo'ladi.
 
