@@ -1,0 +1,68 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "esm"
+  importFileExtension = "js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  OWNER
+  BUXGALTER
+  SOTUVCHI
+  OMBORCHI
+}
+
+enum Locale {
+  uz
+  en
+  ru
+}
+
+model Organization {
+  id             String   @id @default(uuid())
+  name           String
+  inn            String   @default("")
+  address        String   @default("")
+  /// Standart ustama, butun foiz
+  markupPercent  Int      @default(10)
+  /// Standart avans, butun foiz
+  advancePercent Int      @default(30)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  users          User[]
+}
+
+model User {
+  id             String         @id @default(uuid())
+  organizationId String
+  organization   Organization   @relation(fields: [organizationId], references: [id])
+  name           String
+  phone          String
+  passwordHash   String
+  role           Role
+  isActive       Boolean        @default(true)
+  locale         Locale         @default(uz)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  refreshTokens  RefreshToken[]
+
+  @@unique([organizationId, phone])
+  @@index([phone])
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid())
+  /// sha256(token) — tokenning o'zi saqlanmaydi
+  hash      String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
