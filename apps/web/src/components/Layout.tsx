@@ -68,23 +68,15 @@ export function Layout() {
             end={to === '/'}
             className={({ isActive }) =>
               cn(
-                'flex flex-1 flex-col items-center gap-0.5 py-2 text-xs text-muted-foreground',
+                'flex min-w-0 flex-1 flex-col items-center gap-0.5 py-2 text-[11px] text-muted-foreground',
                 isActive && 'text-primary',
               )
             }
           >
             <Icon className="size-5" />
-            {t(labelKey)}
+            <span className="w-full truncate text-center">{t(labelKey)}</span>
           </NavLink>
         ))}
-        <button
-          type="button"
-          onClick={() => void logout()}
-          className="flex flex-1 flex-col items-center gap-0.5 py-2 text-xs text-muted-foreground"
-        >
-          <LogOut className="size-5" />
-          {t('nav.logout')}
-        </button>
       </nav>
     </div>
   );

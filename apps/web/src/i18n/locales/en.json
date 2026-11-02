@@ -1,8 +1,28 @@
 {
-  "app": { "name": "Savdo CRM", "loading": "Loading…" },
-  "nav": { "home": "Home", "users": "Staff", "settings": "Settings", "logout": "Log out" },
-  "theme": { "label": "Theme", "light": "Light", "dark": "Dark", "system": "System" },
-  "language": { "label": "Language", "uz": "O'zbekcha", "en": "English", "ru": "Русский" },
+  "app": {
+    "name": "Savdo CRM",
+    "loading": "Loading…"
+  },
+  "nav": {
+    "home": "Home",
+    "users": "Staff",
+    "settings": "Settings",
+    "logout": "Log out",
+    "products": "Products",
+    "purchases": "Receiving"
+  },
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "language": {
+    "label": "Language",
+    "uz": "O'zbekcha",
+    "en": "English",
+    "ru": "Русский"
+  },
   "roles": {
     "OWNER": "Owner",
     "BUXGALTER": "Accountant",
@@ -19,7 +39,9 @@
   "home": {
     "welcome": "Welcome, {{name}}",
     "role": "Role: {{role}}",
-    "placeholder": "Your tasks for today will appear here in later stages."
+    "placeholder": "Your tasks for today will appear here in later stages.",
+    "lowStock": "Low stock: {{count}}",
+    "showAll": "Show all"
   },
   "users": {
     "title": "Staff",
@@ -54,7 +76,22 @@
     "advancePercent": "Advance, %",
     "saved": "Saved"
   },
-  "common": { "save": "Save", "cancel": "Cancel", "back": "Back to home" },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "back": "Back to home",
+    "add": "Add",
+    "edit": "Edit",
+    "close": "Close",
+    "remove": "Remove",
+    "reason": "Reason",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "currency": "UZS"
+  },
   "errors": {
     "notFoundTitle": "Page not found",
     "forbiddenTitle": "Access denied",
@@ -68,6 +105,122 @@
     "passwordMin": "Password must be at least 6 characters",
     "inn": "TIN must be 9 or 14 digits",
     "currentPasswordRequired": "Enter your current password",
-    "number": "Enter a whole number"
+    "number": "Enter a whole number",
+    "positive": "Must be greater than 0",
+    "min0": "Cannot be negative",
+    "tooLarge": "Value is too large",
+    "quantityDecimals": "At most 3 decimal places",
+    "reasonRequired": "Enter a reason (min. 3 characters)",
+    "duplicateProduct": "The same product is added twice"
+  },
+  "units": {
+    "dona": "pcs",
+    "kg": "kg",
+    "m": "m",
+    "quti": "box"
+  },
+  "movement": {
+    "KIRIM": "Receipt",
+    "CHIQIM": "Issue",
+    "QAYTARISH": "Return",
+    "TUZATISH": "Adjustment",
+    "KOCHIRISH": "Transfer"
+  },
+  "purchaseStatus": {
+    "QORALAMA": "Draft",
+    "TASDIQLANGAN": "Confirmed",
+    "BEKOR": "Cancelled"
+  },
+  "products": {
+    "title": "Products",
+    "add": "Add product",
+    "edit": "Edit product",
+    "search": "Name, SKU or barcode",
+    "category": "Category",
+    "allCategories": "All categories",
+    "noCategory": "No category",
+    "lowOnly": "Low stock only",
+    "empty": "No products found",
+    "name": "Name",
+    "sku": "SKU",
+    "barcode": "Barcode",
+    "unit": "Unit",
+    "minStock": "Minimum stock",
+    "stock": "Stock",
+    "low": "Low",
+    "salePrice": "Sale price",
+    "avgCost": "Cost",
+    "priceAuto": "auto",
+    "priceManual": "manual",
+    "manualPrice": "Sale price (manual)",
+    "autoPriceHint": "Empty — cost × markup",
+    "backToAuto": "Back to auto price"
+  },
+  "categories": {
+    "title": "Categories",
+    "name": "Name",
+    "parent": "Parent category",
+    "noParent": "None (top level)",
+    "markup": "Markup, %",
+    "markupValue": "Markup: {{percent}}%",
+    "markupInherited": "Markup: from parent or company",
+    "markupHint": "Company markup: {{percent}}%. If a category has no markup, its parent's or the company's is used.",
+    "empty": "No categories"
+  },
+  "suppliers": {
+    "title": "Suppliers",
+    "name": "Name",
+    "phone": "Phone",
+    "empty": "No suppliers"
+  },
+  "purchases": {
+    "title": "Receiving",
+    "new": "New receipt",
+    "numberShort": "Receipt #{{number}}",
+    "allStatuses": "All statuses",
+    "empty": "No receipts",
+    "supplier": "Supplier",
+    "noSupplier": "No supplier",
+    "note": "Note",
+    "lines": "Items",
+    "noLines": "No items yet",
+    "addProduct": "Search a product to add…",
+    "noProductFound": "Not found.",
+    "quantity": "Quantity",
+    "price": "Purchase price",
+    "unitCost": "Unit cost",
+    "landedPreview": "Expense: {{expense}} · unit cost: {{unitCost}}",
+    "expenses": "Extra costs",
+    "expensesHint": "Logistics, unloading etc. — split across items by value",
+    "expenseTitle": "Title",
+    "expenseAmount": "Amount",
+    "addExpense": "Add cost",
+    "total": "Total",
+    "saveDraft": "Save draft",
+    "confirm": "Confirm (receive stock)",
+    "cancel": "Cancel receipt",
+    "alreadyCancelled": "Receipt is already cancelled",
+    "costForbidden": "Only the owner or accountant can enter prices and costs",
+    "notDraft": "Only drafts can be changed",
+    "priceMissing": "Enter a purchase price for every item",
+    "productNotFound": "Product not found or inactive",
+    "supplierNotFound": "Supplier not found",
+    "lineCount": "Items: {{count}}"
+  },
+  "stock": {
+    "stocktake": "Stocktake",
+    "stocktakeHint": "Enter the counted quantity — the difference is recorded as an adjustment",
+    "actual": "Counted quantity",
+    "history": "Movement history",
+    "noMovements": "No movements yet",
+    "noDifference": "Stock is unchanged",
+    "insufficient": "Not enough stock"
+  },
+  "catalog": {
+    "categoryCycle": "A category cannot be placed inside itself",
+    "categoryNotFound": "Category not found",
+    "markupForbidden": "Only the owner or accountant can change markup",
+    "priceForbidden": "Only the owner or accountant can change prices",
+    "skuOrBarcodeTaken": "This SKU or barcode is already used"
   }
 }

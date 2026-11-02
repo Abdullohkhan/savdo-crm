@@ -40,7 +40,7 @@ export function LoginPage() {
         </CardHeader>
         <CardContent>
           <form
-            className="grid gap-4"
+            className="grid grid-cols-1 gap-4"
             noValidate
             onSubmit={handleSubmit((v) => login(v).catch(() => undefined))}
           >

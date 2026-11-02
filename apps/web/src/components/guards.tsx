@@ -10,7 +10,7 @@ export function RequireAuth({ children }: { children: ReactNode }) {
   return children;
 }
 
-export function RequireRole({ roles, children }: { roles: Role[]; children: ReactNode }) {
+export function RequireRole({ roles, children }: { roles: readonly Role[]; children: ReactNode }) {
   const role = useAppSelector((s) => s.auth.user?.role);
   if (!role || !roles.includes(role)) return <Navigate to="/forbidden" replace />;
   return children;

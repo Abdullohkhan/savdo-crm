@@ -42,7 +42,7 @@ export function UsersPage() {
   const [updateUser, { error: toggleError }] = useUpdateUserMutation();
 
   return (
-    <div className="grid gap-4">
+    <div className="grid grid-cols-1 gap-4">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">{t('users.title')}</h1>
         <Button size="sm" onClick={() => setMode({ kind: 'create' })}>

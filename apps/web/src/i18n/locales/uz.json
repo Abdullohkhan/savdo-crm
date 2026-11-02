@@ -1,13 +1,28 @@
 {
-  "app": { "name": "Savdo CRM", "loading": "Yuklanmoqda…" },
+  "app": {
+    "name": "Savdo CRM",
+    "loading": "Yuklanmoqda…"
+  },
   "nav": {
     "home": "Bosh sahifa",
     "users": "Xodimlar",
     "settings": "Sozlamalar",
-    "logout": "Chiqish"
+    "logout": "Chiqish",
+    "products": "Tovarlar",
+    "purchases": "Kirim"
   },
-  "theme": { "label": "Tema", "light": "Yorug'", "dark": "Qorong'i", "system": "Tizim" },
-  "language": { "label": "Til", "uz": "O'zbekcha", "en": "English", "ru": "Русский" },
+  "theme": {
+    "label": "Tema",
+    "light": "Yorug'",
+    "dark": "Qorong'i",
+    "system": "Tizim"
+  },
+  "language": {
+    "label": "Til",
+    "uz": "O'zbekcha",
+    "en": "English",
+    "ru": "Русский"
+  },
   "roles": {
     "OWNER": "Egasi",
     "BUXGALTER": "Buxgalter",
@@ -24,7 +39,9 @@
   "home": {
     "welcome": "Xush kelibsiz, {{name}}",
     "role": "Rol: {{role}}",
-    "placeholder": "Bu yerda keyingi bosqichlarda bugungi ishlaringiz chiqadi."
+    "placeholder": "Bu yerda keyingi bosqichlarda bugungi ishlaringiz chiqadi.",
+    "lowStock": "Kam qolgan tovarlar: {{count}}",
+    "showAll": "Hammasini ko'rish"
   },
   "users": {
     "title": "Xodimlar",
@@ -59,7 +76,22 @@
     "advancePercent": "Avans, %",
     "saved": "Saqlandi"
   },
-  "common": { "save": "Saqlash", "cancel": "Bekor qilish", "back": "Bosh sahifaga" },
+  "common": {
+    "save": "Saqlash",
+    "cancel": "Bekor qilish",
+    "back": "Bosh sahifaga",
+    "add": "Qo'shish",
+    "edit": "Tahrirlash",
+    "close": "Yopish",
+    "remove": "O'chirish",
+    "reason": "Sabab",
+    "status": "Holat",
+    "active": "Faol",
+    "inactive": "Faol emas",
+    "activate": "Faollashtirish",
+    "deactivate": "Faolsizlantirish",
+    "currency": "so'm"
+  },
   "errors": {
     "notFoundTitle": "Sahifa topilmadi",
     "forbiddenTitle": "Ruxsat yo'q",
@@ -73,6 +105,122 @@
     "passwordMin": "Parol kamida 6 belgi",
     "inn": "INN 9 yoki 14 raqam",
     "currentPasswordRequired": "Joriy parolni kiriting",
-    "number": "Butun son kiriting"
+    "number": "Butun son kiriting",
+    "positive": "0 dan katta bo'lsin",
+    "min0": "Manfiy bo'lmasin",
+    "tooLarge": "Juda katta qiymat",
+    "quantityDecimals": "Ko'pi bilan 3 kasr xona",
+    "reasonRequired": "Sababni yozing (kamida 3 belgi)",
+    "duplicateProduct": "Bir tovar ikki marta qo'shilgan"
+  },
+  "units": {
+    "dona": "dona",
+    "kg": "kg",
+    "m": "m",
+    "quti": "quti"
+  },
+  "movement": {
+    "KIRIM": "Kirim",
+    "CHIQIM": "Chiqim",
+    "QAYTARISH": "Qaytarish",
+    "TUZATISH": "Tuzatish",
+    "KOCHIRISH": "Ko'chirish"
+  },
+  "purchaseStatus": {
+    "QORALAMA": "Qoralama",
+    "TASDIQLANGAN": "Tasdiqlangan",
+    "BEKOR": "Bekor qilingan"
+  },
+  "products": {
+    "title": "Tovarlar",
+    "add": "Tovar qo'shish",
+    "edit": "Tovarni tahrirlash",
+    "search": "Nom, SKU yoki shtrix-kod",
+    "category": "Toifa",
+    "allCategories": "Barcha toifalar",
+    "noCategory": "Toifasiz",
+    "lowOnly": "Kam qolganlar",
+    "empty": "Tovarlar topilmadi",
+    "name": "Nomi",
+    "sku": "SKU",
+    "barcode": "Shtrix-kod",
+    "unit": "Birlik",
+    "minStock": "Minimal qoldiq",
+    "stock": "Qoldiq",
+    "low": "Kam qoldi",
+    "salePrice": "Sotuv narxi",
+    "avgCost": "Tannarx",
+    "priceAuto": "avtomatik",
+    "priceManual": "qo'lda",
+    "manualPrice": "Sotuv narxi (qo'lda)",
+    "autoPriceHint": "Bo'sh — tannarx × ustama",
+    "backToAuto": "Avtomatik narxga qaytarish"
+  },
+  "categories": {
+    "title": "Toifalar",
+    "name": "Nomi",
+    "parent": "Ota toifa",
+    "noParent": "Yo'q (asosiy)",
+    "markup": "Ustama, %",
+    "markupValue": "Ustama: {{percent}}%",
+    "markupInherited": "Ustama: ota toifa yoki korxonadan",
+    "markupHint": "Korxona ustamasi: {{percent}}%. Toifada ustama bo'sh bo'lsa, ota toifaniki yoki korxonaniki ishlatiladi.",
+    "empty": "Toifalar yo'q"
+  },
+  "suppliers": {
+    "title": "Ta'minotchilar",
+    "name": "Nomi",
+    "phone": "Telefon",
+    "empty": "Ta'minotchilar yo'q"
+  },
+  "purchases": {
+    "title": "Kirim",
+    "new": "Yangi kirim",
+    "numberShort": "Kirim №{{number}}",
+    "allStatuses": "Barcha holatlar",
+    "empty": "Kirimlar yo'q",
+    "supplier": "Ta'minotchi",
+    "noSupplier": "Ta'minotchisiz",
+    "note": "Izoh",
+    "lines": "Tovarlar",
+    "noLines": "Kirimda tovar yo'q",
+    "addProduct": "Tovar qidirib qo'shing…",
+    "noProductFound": "Topilmadi.",
+    "quantity": "Miqdor",
+    "price": "Xarid narxi",
+    "unitCost": "Tannarx",
+    "landedPreview": "Xarajat: {{expense}} · tannarx: {{unitCost}}",
+    "expenses": "Qo'shimcha xarajatlar",
+    "expensesHint": "Logistika, yuk tushirish va h.k. — tovarlarga qiymatiga qarab taqsimlanadi",
+    "expenseTitle": "Nomi",
+    "expenseAmount": "Summa",
+    "addExpense": "Xarajat qo'shish",
+    "total": "Jami",
+    "saveDraft": "Qoralamani saqlash",
+    "confirm": "Tasdiqlash (omborga kirim)",
+    "cancel": "Kirimni bekor qilish",
+    "alreadyCancelled": "Kirim allaqachon bekor qilingan",
+    "costForbidden": "Narx va xarajatlarni faqat egasi yoki buxgalter kiritadi",
+    "notDraft": "Faqat qoralamani o'zgartirish mumkin",
+    "priceMissing": "Hamma tovarga xarid narxini kiriting",
+    "productNotFound": "Tovar topilmadi yoki faol emas",
+    "supplierNotFound": "Ta'minotchi topilmadi",
+    "lineCount": "Tovarlar: {{count}}"
+  },
+  "stock": {
+    "stocktake": "Inventarizatsiya",
+    "stocktakeHint": "Haqiqiy miqdorni kiriting — farq tuzatish sifatida yoziladi",
+    "actual": "Haqiqiy miqdor",
+    "history": "Harakatlar tarixi",
+    "noMovements": "Harakatlar yo'q",
+    "noDifference": "Qoldiq o'zgarmadi",
+    "insufficient": "Qoldiq yetarli emas"
+  },
+  "catalog": {
+    "categoryCycle": "Toifani o'z ichiga joylab bo'lmaydi",
+    "categoryNotFound": "Toifa topilmadi",
+    "markupForbidden": "Ustamani faqat egasi yoki buxgalter o'zgartiradi",
+    "priceForbidden": "Narxni faqat egasi yoki buxgalter o'zgartiradi",
+    "skuOrBarcodeTaken": "Bu SKU yoki shtrix-kod band"
   }
 }

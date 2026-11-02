@@ -7,6 +7,7 @@ import {
   type UpdateMeInput,
   updateMeSchema,
 } from '@savdo/shared';
+import { LogOut } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Field } from '@/components/Field';
@@ -18,6 +19,7 @@ import { Label } from '@/components/ui/label';
 import { useAppSelector } from '@/store';
 import {
   apiErrorKey,
+  useLogoutMutation,
   useOrganizationQuery,
   useUpdateMeMutation,
   useUpdateOrganizationMutation,
@@ -27,9 +29,10 @@ export function SettingsPage() {
   const { t } = useTranslation();
   const isOwner = useAppSelector((s) => s.auth.user?.role === Role.OWNER);
   const { data: org } = useOrganizationQuery(undefined, { skip: !isOwner });
+  const [logout] = useLogoutMutation();
 
   return (
-    <div className="grid gap-4">
+    <div className="grid grid-cols-1 gap-4">
       <h1 className="text-xl font-semibold">{t('settings.title')}</h1>
 
       <Card>
@@ -50,6 +53,11 @@ export function SettingsPage() {
 
       <PasswordCard />
       {isOwner && org && <OrganizationCard key={org.id} org={org} />}
+
+      <Button variant="outline" className="justify-self-start" onClick={() => void logout()}>
+        <LogOut />
+        {t('nav.logout')}
+      </Button>
     </div>
   );
 }
