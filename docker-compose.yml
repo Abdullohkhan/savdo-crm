@@ -1,0 +1,14 @@
+# Faqat lokal PostgreSQL uchun
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: savdo
+    ports:
+      - '5432:5432'
+    volumes:
+      - savdo-db:/var/lib/postgresql/data
+volumes:
+  savdo-db:
