@@ -1,5 +1,36 @@
 # Holat
 
+## 2026-11-02 — 2-bosqich (tovar va ombor) ✅
+Prompt: `docs/prompts/2-tovar-ombor.md` (shu sessiyada spec asosida yozildi).
+- ✅ Prisma: `Warehouse` (bitta "Asosiy ombor"), `Category` (daraxt, ixtiyoriy ustama), `Product`, `Supplier`,
+  `Purchase` + `PurchaseLine` + `PurchaseExpense`, `StockMovement`, `AuditLog`. Miqdor `Decimal(14,3)`, pul butun so'm (`Int`/`BigInt`).
+- ✅ Kirim: qoralama → tasdiqlash. Xarajatlar qatorlarga qiymatiga mutanosib taqsimlanadi (yaxlitlash qoldig'i yo'qolmaydi),
+  `avgCost` o'rtacha tortilgan usulda yangilanadi (spec misoli testda), `KIRIM` harakati yoziladi, sotuv narxi avtomatik.
+- ✅ Tasdiqlangan kirimni bekor qilish (sabab bilan): qoldiq yetsa teskari harakat + tannarx qayta hisobi, yetmasa rad.
+- ✅ Inventarizatsiya (`TUZATISH`), manfiy qoldiq taqiqlangan. Tranzaksiya + qatorlarni qulflash — parallel tasdiqlash testi bor.
+- ✅ Tannarx, xarid narxi, xarajatlar faqat OWNER/BUXGALTER javobida (API darajasida). AuditLog: narx, tannarx, kirim statusi, inventarizatsiya, ustama.
+- ✅ Web: Tovarlar (qidiruv, toifa filtri, kam qolganlar, kartochka, harakatlar tarixi, inventarizatsiya), Toifalar, Ta'minotchilar,
+  Kirim (ro'yxat, muharrir — tannarx hisobi oldindan ko'rinadi, tasdiqlash, bekor qilish), bosh sahifada kam qolganlar. uz/en/ru.
+  Telefonda pastki menyu 5 ta; "Chiqish" Sozlamalarga ko'chdi.
+- ✅ Testlar: api 28, web 17, shared 12 — hammasi o'tdi. Typecheck, lint, build toza. Playwright bilan 360 px'da to'liq oqim
+  (toifa → tovar → ta'minotchi → kirim → tasdiqlash → inventarizatsiya) va 3 tilda gorizontal toshish yo'qligi tekshirildi.
+
+### Qabul qilingan qarorlar (spec'da aniq emas edi)
+- Ustama: tovar toifasi → eng yaqin ota-toifa → korxona. Korxona/toifa ustamasi o'zgarsa avtomatik narxlar qayta hisoblanadi.
+- Sotuv narxi qo'lda qo'yilsa (`priceManual`) kirimda o'zgarmaydi; "Avtomatik narxga qaytarish" tugmasi bor.
+- Tasdiqlangan kirim bekor qilinganda teskari harakat `KIRIM` turida manfiy miqdor bilan yoziladi (kirimga bog'langan).
+- "Kam qoldi": `minStock > 0` va qoldiq ≤ `minStock`.
+- Ro'yxatlar sahifalanmagan (tovar 1000, kirim 200 tagacha) — hajm oshsa sahifalash qo'shiladi.
+
+### SAVOL
+- SAVOL: OMBORCHI tannarxni ko'rmaydi, shuning uchun kirim ikki qadamli: OMBORCHI qoralama (tovar + miqdor) tuzadi,
+  BUXGALTER/OWNER xarid narxi va xarajatlarni kiritib tasdiqlaydi — qoldiq shundan keyin oshadi. Atoyo'da shunday ishlaydimi?
+- SAVOL: Inventarizatsiyani OWNER va OMBORCHI qiladi (BUXGALTER — yo'q). To'g'rimi?
+- SAVOL: Tovar rasmi — hozircha faqat maydon (`imageUrl`), fayl yuklash yo'q. Qayerda saqlash (server diski / S3) — 6-bosqichda hal qilamizmi?
+
+### Keyingi
+- 3-bosqich — savdo: `Customer`, `SalesOrder` bosqichlari, `Payment`, avans qoidasi, `CHIQIM`/`QAYTARISH` harakatlari. Prompt yozilishi kerak.
+
 ## 2026-11-02 — 1-bosqich (skelet) ✅
 - ✅ pnpm monorepo: `apps/web`, `apps/api`, `packages/shared`; ESLint + Prettier, TS strict, `.env.example`, `docker-compose.yml` (faqat PostgreSQL).
 - ✅ `packages/shared`: `Role`, `Locale`, `Theme` enumlari; Zod sxemalar (login, xodim yaratish/tahrirlash, `PATCH /users/me`, korxona sozlamalari).
