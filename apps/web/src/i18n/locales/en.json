@@ -1,0 +1,73 @@
+{
+  "app": { "name": "Savdo CRM", "loading": "Loading…" },
+  "nav": { "home": "Home", "users": "Staff", "settings": "Settings", "logout": "Log out" },
+  "theme": { "label": "Theme", "light": "Light", "dark": "Dark", "system": "System" },
+  "language": { "label": "Language", "uz": "O'zbekcha", "en": "English", "ru": "Русский" },
+  "roles": {
+    "OWNER": "Owner",
+    "BUXGALTER": "Accountant",
+    "SOTUVCHI": "Sales",
+    "OMBORCHI": "Warehouse"
+  },
+  "auth": {
+    "title": "Sign in",
+    "phone": "Phone",
+    "password": "Password",
+    "submit": "Sign in",
+    "invalidCredentials": "Wrong phone or password"
+  },
+  "home": {
+    "welcome": "Welcome, {{name}}",
+    "role": "Role: {{role}}",
+    "placeholder": "Your tasks for today will appear here in later stages."
+  },
+  "users": {
+    "title": "Staff",
+    "add": "Add",
+    "edit": "Edit",
+    "name": "Name",
+    "phone": "Phone",
+    "role": "Role",
+    "password": "Password",
+    "newPasswordOptional": "New password (optional)",
+    "active": "Active",
+    "inactive": "Inactive",
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "empty": "No staff yet",
+    "phoneTaken": "This phone number is already used",
+    "cannotChangeSelf": "You cannot deactivate yourself or change your own role",
+    "wrongCurrentPassword": "Current password is wrong"
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile",
+    "appearance": "Appearance",
+    "changePassword": "Change password",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "organization": "Company",
+    "orgName": "Name",
+    "inn": "TIN",
+    "address": "Address",
+    "markupPercent": "Markup, %",
+    "advancePercent": "Advance, %",
+    "saved": "Saved"
+  },
+  "common": { "save": "Save", "cancel": "Cancel", "back": "Back to home" },
+  "errors": {
+    "notFoundTitle": "Page not found",
+    "forbiddenTitle": "Access denied",
+    "forbidden": "You don't have permission for this action",
+    "generic": "Something went wrong, please try again"
+  },
+  "validation": {
+    "failed": "Invalid data",
+    "required": "Required",
+    "phone": "Invalid phone number (e.g. +998901234567)",
+    "passwordMin": "Password must be at least 6 characters",
+    "inn": "TIN must be 9 or 14 digits",
+    "currentPasswordRequired": "Enter your current password",
+    "number": "Enter a whole number"
+  }
+}

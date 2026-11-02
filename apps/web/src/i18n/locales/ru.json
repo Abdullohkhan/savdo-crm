@@ -1,0 +1,73 @@
+{
+  "app": { "name": "Savdo CRM", "loading": "Загрузка…" },
+  "nav": { "home": "Главная", "users": "Сотрудники", "settings": "Настройки", "logout": "Выйти" },
+  "theme": { "label": "Тема", "light": "Светлая", "dark": "Тёмная", "system": "Системная" },
+  "language": { "label": "Язык", "uz": "O'zbekcha", "en": "English", "ru": "Русский" },
+  "roles": {
+    "OWNER": "Владелец",
+    "BUXGALTER": "Бухгалтер",
+    "SOTUVCHI": "Продавец",
+    "OMBORCHI": "Кладовщик"
+  },
+  "auth": {
+    "title": "Вход",
+    "phone": "Телефон",
+    "password": "Пароль",
+    "submit": "Войти",
+    "invalidCredentials": "Неверный телефон или пароль"
+  },
+  "home": {
+    "welcome": "Добро пожаловать, {{name}}",
+    "role": "Роль: {{role}}",
+    "placeholder": "Здесь на следующих этапах появятся задачи на сегодня."
+  },
+  "users": {
+    "title": "Сотрудники",
+    "add": "Добавить",
+    "edit": "Изменить",
+    "name": "Имя",
+    "phone": "Телефон",
+    "role": "Роль",
+    "password": "Пароль",
+    "newPasswordOptional": "Новый пароль (необязательно)",
+    "active": "Активен",
+    "inactive": "Неактивен",
+    "deactivate": "Деактивировать",
+    "activate": "Активировать",
+    "empty": "Сотрудников нет",
+    "phoneTaken": "Этот номер уже занят",
+    "cannotChangeSelf": "Нельзя деактивировать себя или менять свою роль",
+    "wrongCurrentPassword": "Неверный текущий пароль"
+  },
+  "settings": {
+    "title": "Настройки",
+    "profile": "Профиль",
+    "appearance": "Оформление",
+    "changePassword": "Сменить пароль",
+    "currentPassword": "Текущий пароль",
+    "newPassword": "Новый пароль",
+    "organization": "Компания",
+    "orgName": "Название",
+    "inn": "ИНН",
+    "address": "Адрес",
+    "markupPercent": "Наценка, %",
+    "advancePercent": "Аванс, %",
+    "saved": "Сохранено"
+  },
+  "common": { "save": "Сохранить", "cancel": "Отмена", "back": "На главную" },
+  "errors": {
+    "notFoundTitle": "Страница не найдена",
+    "forbiddenTitle": "Нет доступа",
+    "forbidden": "У вас нет прав на это действие",
+    "generic": "Произошла ошибка, попробуйте ещё раз"
+  },
+  "validation": {
+    "failed": "Неверные данные",
+    "required": "Обязательное поле",
+    "phone": "Неверный номер (например +998901234567)",
+    "passwordMin": "Пароль не короче 6 символов",
+    "inn": "ИНН — 9 или 14 цифр",
+    "currentPasswordRequired": "Введите текущий пароль",
+    "number": "Введите целое число"
+  }
+}

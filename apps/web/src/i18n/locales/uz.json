@@ -1,0 +1,78 @@
+{
+  "app": { "name": "Savdo CRM", "loading": "Yuklanmoqda…" },
+  "nav": {
+    "home": "Bosh sahifa",
+    "users": "Xodimlar",
+    "settings": "Sozlamalar",
+    "logout": "Chiqish"
+  },
+  "theme": { "label": "Tema", "light": "Yorug'", "dark": "Qorong'i", "system": "Tizim" },
+  "language": { "label": "Til", "uz": "O'zbekcha", "en": "English", "ru": "Русский" },
+  "roles": {
+    "OWNER": "Egasi",
+    "BUXGALTER": "Buxgalter",
+    "SOTUVCHI": "Sotuvchi",
+    "OMBORCHI": "Omborchi"
+  },
+  "auth": {
+    "title": "Kirish",
+    "phone": "Telefon",
+    "password": "Parol",
+    "submit": "Kirish",
+    "invalidCredentials": "Telefon yoki parol noto'g'ri"
+  },
+  "home": {
+    "welcome": "Xush kelibsiz, {{name}}",
+    "role": "Rol: {{role}}",
+    "placeholder": "Bu yerda keyingi bosqichlarda bugungi ishlaringiz chiqadi."
+  },
+  "users": {
+    "title": "Xodimlar",
+    "add": "Qo'shish",
+    "edit": "Tahrirlash",
+    "name": "Ism",
+    "phone": "Telefon",
+    "role": "Rol",
+    "password": "Parol",
+    "newPasswordOptional": "Yangi parol (ixtiyoriy)",
+    "active": "Faol",
+    "inactive": "Faol emas",
+    "deactivate": "Faolsizlantirish",
+    "activate": "Faollashtirish",
+    "empty": "Xodimlar yo'q",
+    "phoneTaken": "Bu telefon raqam band",
+    "cannotChangeSelf": "O'zingizni faolsizlantira yoki rolingizni o'zgartira olmaysiz",
+    "wrongCurrentPassword": "Joriy parol noto'g'ri"
+  },
+  "settings": {
+    "title": "Sozlamalar",
+    "profile": "Profil",
+    "appearance": "Ko'rinish",
+    "changePassword": "Parolni o'zgartirish",
+    "currentPassword": "Joriy parol",
+    "newPassword": "Yangi parol",
+    "organization": "Korxona",
+    "orgName": "Nomi",
+    "inn": "INN",
+    "address": "Manzil",
+    "markupPercent": "Ustama, %",
+    "advancePercent": "Avans, %",
+    "saved": "Saqlandi"
+  },
+  "common": { "save": "Saqlash", "cancel": "Bekor qilish", "back": "Bosh sahifaga" },
+  "errors": {
+    "notFoundTitle": "Sahifa topilmadi",
+    "forbiddenTitle": "Ruxsat yo'q",
+    "forbidden": "Bu amal uchun ruxsatingiz yo'q",
+    "generic": "Xatolik yuz berdi, qayta urinib ko'ring"
+  },
+  "validation": {
+    "failed": "Ma'lumotlar noto'g'ri",
+    "required": "To'ldirish shart",
+    "phone": "Telefon raqam noto'g'ri (masalan +998901234567)",
+    "passwordMin": "Parol kamida 6 belgi",
+    "inn": "INN 9 yoki 14 raqam",
+    "currentPasswordRequired": "Joriy parolni kiriting",
+    "number": "Butun son kiriting"
+  }
+}
