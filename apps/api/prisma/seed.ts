@@ -27,6 +27,12 @@ const org =
   (await prisma.organization.findFirst({ where: { name: ORG_NAME } })) ??
   (await prisma.organization.create({ data: { name: ORG_NAME } }));
 
+if (!(await prisma.warehouse.findFirst({ where: { organizationId: org.id, isDefault: true } }))) {
+  await prisma.warehouse.create({
+    data: { organizationId: org.id, name: 'Asosiy ombor', isDefault: true },
+  });
+}
+
 const existing = await prisma.user.findUnique({
   where: { organizationId_phone: { organizationId: org.id, phone } },
 });

@@ -1,7 +1,7 @@
 generator client {
-  provider     = "prisma-client"
-  output       = "../src/generated/prisma"
-  moduleFormat = "esm"
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  moduleFormat        = "esm"
   importFileExtension = "js"
 }
 
@@ -23,32 +23,42 @@ enum Locale {
 }
 
 model Organization {
-  id             String   @id @default(uuid())
+  id             String          @id @default(uuid())
   name           String
-  inn            String   @default("")
-  address        String   @default("")
+  inn            String          @default("")
+  address        String          @default("")
   /// Standart ustama, butun foiz
-  markupPercent  Int      @default(10)
+  markupPercent  Int             @default(10)
   /// Standart avans, butun foiz
-  advancePercent Int      @default(30)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  advancePercent Int             @default(30)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
   users          User[]
+  warehouses     Warehouse[]
+  categories     Category[]
+  products       Product[]
+  suppliers      Supplier[]
+  purchases      Purchase[]
+  movements      StockMovement[]
+  auditLogs      AuditLog[]
 }
 
 model User {
-  id             String         @id @default(uuid())
+  id             String          @id @default(uuid())
   organizationId String
-  organization   Organization   @relation(fields: [organizationId], references: [id])
+  organization   Organization    @relation(fields: [organizationId], references: [id])
   name           String
   phone          String
   passwordHash   String
   role           Role
-  isActive       Boolean        @default(true)
-  locale         Locale         @default(uz)
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  isActive       Boolean         @default(true)
+  locale         Locale          @default(uz)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
   refreshTokens  RefreshToken[]
+  purchases      Purchase[]
+  movements      StockMovement[]
+  auditLogs      AuditLog[]
 
   @@unique([organizationId, phone])
   @@index([phone])
@@ -65,4 +75,193 @@ model RefreshToken {
   createdAt DateTime  @default(now())
 
   @@index([userId])
+}
+
+// ---------- 2-bosqich: katalog va ombor ----------
+
+enum Unit {
+  dona
+  kg
+  m
+  quti
+}
+
+enum MovementType {
+  KIRIM
+  CHIQIM
+  QAYTARISH
+  TUZATISH
+  KOCHIRISH
+}
+
+enum PurchaseStatus {
+  QORALAMA
+  TASDIQLANGAN
+  BEKOR
+}
+
+model Warehouse {
+  id             String          @id @default(uuid())
+  organizationId String
+  organization   Organization    @relation(fields: [organizationId], references: [id])
+  name           String
+  isDefault      Boolean         @default(false)
+  createdAt      DateTime        @default(now())
+  movements      StockMovement[]
+  purchases      Purchase[]
+
+  @@index([organizationId])
+}
+
+model Category {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  name           String
+  parentId       String?
+  parent         Category?    @relation("CategoryTree", fields: [parentId], references: [id])
+  children       Category[]   @relation("CategoryTree")
+  /// null — korxona ustamasi ishlatiladi
+  markupPercent  Int?
+  isActive       Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  products       Product[]
+
+  @@index([organizationId])
+}
+
+model Product {
+  id             String          @id @default(uuid())
+  organizationId String
+  organization   Organization    @relation(fields: [organizationId], references: [id])
+  sku            String
+  /// Bo'sh satr emas — null (unique indeks uchun)
+  barcode        String?
+  name           String
+  unit           Unit            @default(dona)
+  categoryId     String?
+  category       Category?       @relation(fields: [categoryId], references: [id])
+  /// Sotuv narxi, butun so'm
+  salePrice      Int             @default(0)
+  /// true — narx qo'lda qo'yilgan, kirimda avtomatik o'zgarmaydi
+  priceManual    Boolean         @default(false)
+  /// O'rtacha tortilgan tannarx, butun so'm
+  avgCost        Int             @default(0)
+  minStock       Decimal         @default(0) @db.Decimal(14, 3)
+  imageUrl       String?
+  isActive       Boolean         @default(true)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  purchaseLines  PurchaseLine[]
+  movements      StockMovement[]
+
+  @@unique([organizationId, sku])
+  @@unique([organizationId, barcode])
+  @@index([organizationId, name])
+}
+
+model Supplier {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  name           String
+  phone          String       @default("")
+  inn            String       @default("")
+  isActive       Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  purchases      Purchase[]
+
+  @@index([organizationId])
+}
+
+model Purchase {
+  id             String            @id @default(uuid())
+  organizationId String
+  organization   Organization      @relation(fields: [organizationId], references: [id])
+  /// Korxona ichida tartib raqami
+  number         Int
+  warehouseId    String
+  warehouse      Warehouse         @relation(fields: [warehouseId], references: [id])
+  supplierId     String?
+  supplier       Supplier?         @relation(fields: [supplierId], references: [id])
+  status         PurchaseStatus    @default(QORALAMA)
+  note           String            @default("")
+  createdById    String
+  createdBy      User              @relation(fields: [createdById], references: [id])
+  confirmedAt    DateTime?
+  cancelledAt    DateTime?
+  cancelReason   String?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  lines          PurchaseLine[]
+  expenses       PurchaseExpense[]
+  movements      StockMovement[]
+
+  @@unique([organizationId, number])
+  @@index([organizationId, status])
+}
+
+model PurchaseLine {
+  id               String   @id @default(uuid())
+  purchaseId       String
+  purchase         Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  productId        String
+  product          Product  @relation(fields: [productId], references: [id])
+  quantity         Decimal  @db.Decimal(14, 3)
+  /// Xarid narxi (birlik), butun so'm; qoralamada bo'sh bo'lishi mumkin
+  price            Int?
+  /// Tasdiqlashda hisoblanadi
+  allocatedExpense BigInt?
+  landedTotal      BigInt?
+  unitCost         Int?
+
+  @@unique([purchaseId, productId])
+}
+
+model PurchaseExpense {
+  id         String   @id @default(uuid())
+  purchaseId String
+  purchase   Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  title      String
+  amount     BigInt
+}
+
+model StockMovement {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  warehouseId    String
+  warehouse      Warehouse    @relation(fields: [warehouseId], references: [id])
+  productId      String
+  product        Product      @relation(fields: [productId], references: [id])
+  type           MovementType
+  /// Ishorali: + kirdi, − chiqdi
+  quantity       Decimal      @db.Decimal(14, 3)
+  /// Harakat paytidagi birlik tannarxi, butun so'm
+  unitCost       Int
+  purchaseId     String?
+  purchase       Purchase?    @relation(fields: [purchaseId], references: [id])
+  note           String       @default("")
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId, productId, createdAt])
+}
+
+model AuditLog {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+  entity         String
+  entityId       String
+  action         String
+  data           Json
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId, entity, entityId])
 }
