@@ -4,7 +4,7 @@ import { NavLink, Outlet } from 'react-router';
 import { cn } from '@/lib/utils';
 import { useLogoutMutation } from '@/store/api';
 import { useAppSelector } from '@/store';
-import { visibleNav } from './nav';
+import { mobileNav, visibleNav } from './nav';
 import { LanguageSwitcher, ThemeSwitcher } from './Switchers';
 import { Button } from './ui/button';
 
@@ -12,6 +12,7 @@ export function Layout() {
   const { t } = useTranslation();
   const role = useAppSelector((s) => s.auth.user?.role);
   const items = visibleNav(role);
+  const { bottom } = mobileNav(role);
   const [logout] = useLogoutMutation();
 
   return (
@@ -61,7 +62,7 @@ export function Layout() {
         aria-label="bottom"
         className="fixed inset-x-0 bottom-0 z-10 flex border-t bg-background pb-[env(safe-area-inset-bottom)] md:hidden"
       >
-        {items.map(({ to, labelKey, icon: Icon }) => (
+        {bottom.map(({ to, labelKey, icon: Icon }) => (
           <NavLink
             key={to}
             to={to}

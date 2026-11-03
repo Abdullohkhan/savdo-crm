@@ -9,7 +9,11 @@
     "settings": "Sozlamalar",
     "logout": "Chiqish",
     "products": "Tovarlar",
-    "purchases": "Kirim"
+    "purchases": "Kirim",
+    "orders": "Buyurtmalar",
+    "customers": "Mijozlar",
+    "payments": "To'lovlar",
+    "menu": "Menyu"
   },
   "theme": {
     "label": "Tema",
@@ -41,7 +45,15 @@
     "role": "Rol: {{role}}",
     "placeholder": "Bu yerda keyingi bosqichlarda bugungi ishlaringiz chiqadi.",
     "lowStock": "Kam qolgan tovarlar: {{count}}",
-    "showAll": "Hammasini ko'rish"
+    "showAll": "Hammasini ko'rish",
+    "priceApprovals": "Narxga ruxsat kutilmoqda",
+    "paymentsToConfirm": "Tasdiqlanadigan to'lovlar",
+    "awaitingAdvance": "Avans kutayotgan buyurtmalar",
+    "toPick": "Yig'iladigan buyurtmalar",
+    "toComplete": "Jo'natilgan, yakunlanmagan",
+    "drafts": "Qoralamalarim",
+    "debtsDue": "Nasiya muddati yaqin yoki o'tgan",
+    "noTasks": "Hozircha ish yo'q"
   },
   "users": {
     "title": "Xodimlar",
@@ -111,7 +123,8 @@
     "tooLarge": "Juda katta qiymat",
     "quantityDecimals": "Ko'pi bilan 3 kasr xona",
     "reasonRequired": "Sababni yozing (kamida 3 belgi)",
-    "duplicateProduct": "Bir tovar ikki marta qo'shilgan"
+    "duplicateProduct": "Bir tovar ikki marta qo'shilgan",
+    "date": "Sana noto'g'ri"
   },
   "units": {
     "dona": "dona",
@@ -222,5 +235,110 @@
     "markupForbidden": "Ustamani faqat egasi yoki buxgalter o'zgartiradi",
     "priceForbidden": "Narxni faqat egasi yoki buxgalter o'zgartiradi",
     "skuOrBarcodeTaken": "Bu SKU yoki shtrix-kod band"
+  },
+  "customerType": {
+    "JISMONIY": "Jismoniy shaxs",
+    "YURIDIK": "Yuridik shaxs"
+  },
+  "orderStatus": {
+    "QORALAMA": "Qoralama",
+    "TASDIQLANGAN": "Tasdiqlangan",
+    "AVANS_KUTILMOQDA": "Avans kutilmoqda",
+    "YIGILMOQDA": "Yig'ilmoqda",
+    "JONATILDI": "Jo'natildi",
+    "YAKUNLANDI": "Yakunlandi",
+    "BEKOR": "Bekor qilingan"
+  },
+  "paymentMethod": {
+    "NAQD": "Naqd",
+    "KARTA": "Karta",
+    "OTKAZMA": "O'tkazma"
+  },
+  "paymentStatus": {
+    "KUTILMOQDA": "Tasdiq kutilmoqda",
+    "TASDIQLANGAN": "Tasdiqlangan",
+    "RAD_ETILGAN": "Rad etilgan"
+  },
+  "customers": {
+    "title": "Mijozlar",
+    "search": "Nom, telefon yoki INN",
+    "empty": "Mijozlar topilmadi",
+    "type": "Turi",
+    "name": "Nomi / F.I.Sh.",
+    "phone": "Telefon",
+    "creditLimit": "Nasiya limiti",
+    "debt": "Qarzdorlik",
+    "limitForbidden": "Nasiya limitini faqat egasi o'zgartiradi"
+  },
+  "debts": {
+    "title": "Nasiya",
+    "due": "muddat",
+    "dueDate": "To'lov muddati",
+    "overdue": "muddati o'tgan"
+  },
+  "orders": {
+    "title": "Buyurtmalar",
+    "new": "Yangi buyurtma",
+    "numberShort": "Buyurtma №{{number}}",
+    "allStatuses": "Barcha holatlar",
+    "empty": "Buyurtmalar yo'q",
+    "customer": "Mijoz",
+    "chooseCustomer": "Mijozni tanlang",
+    "newCustomerHint": "Yangi mijoz qo'shish",
+    "seller": "Sotuvchi",
+    "listPrice": "Narx ro'yxati",
+    "price": "Sotuv narxi",
+    "lineTotal": "Summa",
+    "discount": "chegirma {{percent}}%",
+    "paid": "To'langan",
+    "profit": "Foyda",
+    "advance": "Avans ({{percent}}%)",
+    "needsApproval": "ruxsat kerak",
+    "belowCost": "Tannarxdan past",
+    "belowCostWarning": "Ba'zi narxlar tannarxdan past — egasining ruxsati kerak",
+    "approvePrice": "Narxlarga ruxsat berish",
+    "confirm": "Tasdiqlash",
+    "stages": "Bosqichlar",
+    "picked": "{{name}} yig'ildi",
+    "pickedShort": "yig'ildi",
+    "pickHint": "Jo'natishdan oldin hamma tovarni yig'ilgan deb belgilang",
+    "shortagesTitle": "Yetishmayotgan tovarlar",
+    "missing": "yetmaydi: {{missing}} {{unit}} (bor: {{available}})",
+    "createPurchase": "Kirim qoralamasini yaratish",
+    "ship": "Jo'natish",
+    "complete": "Yakunlash",
+    "completeWithDebt": "Nasiya bilan yakunlash",
+    "debtHint": "To'lanmagan: {{amount}} — nasiyaga o'tadi",
+    "pendingFirst": "Avval kutilayotgan to'lovlar tasdiqlansin",
+    "cancel": "Buyurtmani bekor qilish",
+    "cancelShippedOwnerOnly": "Jo'natilgan buyurtmani faqat egasi bekor qiladi",
+    "cannotCancel": "Bu buyurtmani bekor qilib bo'lmaydi",
+    "creditLimitExceeded": "Mijozning nasiya limiti yetmaydi",
+    "customerNotFound": "Mijoz topilmadi yoki faol emas",
+    "dueDatePast": "Muddat bugundan oldin bo'lmasin",
+    "dueDateRequired": "To'liq to'lanmagan — nasiya muddatini kiriting",
+    "noApprovalNeeded": "Ruxsat kerak emas",
+    "noLines": "Buyurtmada tovar yo'q",
+    "noShortage": "Yetishmayotgan tovar yo'q",
+    "notAllPicked": "Hamma tovar yig'ilmagan",
+    "paymentsPending": "Tasdiqlanmagan to'lovlar bor",
+    "priceApprovalRequired": "Tannarxdan past narxga egasining ruxsati kerak",
+    "productNotFound": "Tovar topilmadi yoki faol emas",
+    "wrongStatus": "Bu bosqichda bu amalni bajarib bo'lmaydi"
+  },
+  "payments": {
+    "title": "To'lovlar",
+    "all": "Hammasi",
+    "empty": "To'lovlar yo'q",
+    "receive": "To'lov qabul qilish",
+    "method": "Usul",
+    "advance": "avans",
+    "confirm": "Tasdiqlash",
+    "reject": "Rad etish",
+    "pendingSum": "tasdiq kutmoqda: {{amount}}",
+    "dueHint": "Qabul qilish mumkin: {{amount}} gacha",
+    "exceedsDue": "Summa qolgan qarzdan katta",
+    "notPending": "To'lov allaqachon ko'rib chiqilgan",
+    "nothingDue": "To'lanadigan summa yo'q"
   }
 }

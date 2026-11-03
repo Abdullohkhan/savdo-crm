@@ -2,12 +2,16 @@ import { screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { AppRoutes } from '@/AppRoutes';
 import { Layout } from '@/components/Layout';
+import { MenuPage } from '@/pages/MenuPage';
 import { makeUser, renderWithStore } from './utils';
 
 describe('rolga qarab menyu', () => {
-  it('OWNER "Xodimlar" menyusini ko`radi', () => {
-    renderWithStore(<Layout />, { user: makeUser({ role: 'OWNER' }) });
-    expect(screen.getAllByRole('link', { name: /Xodimlar/ })).toHaveLength(2);
+  it('OWNER "Xodimlar" menyusini ko`radi (yon panel va telefondagi "Menyu")', () => {
+    const { unmount } = renderWithStore(<Layout />, { user: makeUser({ role: 'OWNER' }) });
+    expect(screen.getAllByRole('link', { name: /Xodimlar/ })).toHaveLength(1);
+    unmount();
+    renderWithStore(<MenuPage />, { user: makeUser({ role: 'OWNER' }) });
+    expect(screen.getByRole('link', { name: /Xodimlar/ })).toBeInTheDocument();
   });
 
   it.each(['BUXGALTER', 'SOTUVCHI', 'OMBORCHI'] as const)(

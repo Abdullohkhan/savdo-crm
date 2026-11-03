@@ -206,6 +206,11 @@ function MovementsCard({
                         {t('purchases.numberShort', { number: m.purchaseNumber })}
                       </Link>
                     )}
+                    {m.orderId && (
+                      <Link className="underline" to={`/orders/${m.orderId}`}>
+                        {t('orders.numberShort', { number: m.orderNumber })}
+                      </Link>
+                    )}
                   </p>
                   <p className="truncate text-muted-foreground">
                     {formatDate(m.createdAt)} · {m.userName}

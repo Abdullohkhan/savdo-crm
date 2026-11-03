@@ -6,6 +6,21 @@ import {
   type FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react';
 import type {
+  CompleteOrderInput,
+  CustomerCreateInput,
+  CustomerDto,
+  CustomerUpdateInput,
+  DashboardDto,
+  DebtDto,
+  OrderDraftInput,
+  OrderDraftUpdateInput,
+  OrderDto,
+  OrderListItemDto,
+  OrderStatus,
+  PaymentCreateInput,
+  PaymentDto,
+  PaymentStatus,
+  ShortageDto,
   CancelInput,
   CategoryCreateInput,
   CategoryDto,
@@ -93,7 +108,18 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['User', 'Organization', 'Category', 'Product', 'Supplier', 'Purchase'],
+  tagTypes: [
+    'User',
+    'Organization',
+    'Category',
+    'Product',
+    'Supplier',
+    'Purchase',
+    'Customer',
+    'Order',
+    'Payment',
+    'Dashboard',
+  ],
   endpoints: (b) => ({
     login: b.mutation<AuthResponse, LoginInput>({
       query: (body) => ({ url: '/auth/login', method: 'POST', body }),
@@ -241,6 +267,135 @@ export const api = createApi({
       query: ({ id, body }) => ({ url: `/purchases/${id}/cancel`, method: 'POST', body }),
       invalidatesTags: ['Purchase', 'Product'],
     }),
+
+    // ---------- Savdo ----------
+    customers: b.query<CustomerDto[], { q?: string; inactive?: boolean } | void>({
+      query: (p) => {
+        const params = new URLSearchParams();
+        if (p?.q) params.set('q', p.q);
+        if (p?.inactive) params.set('inactive', '1');
+        const qs = params.toString();
+        return `/customers${qs ? `?${qs}` : ''}`;
+      },
+      providesTags: ['Customer'],
+    }),
+    customer: b.query<CustomerDto, string>({
+      query: (id) => `/customers/${id}`,
+      providesTags: ['Customer'],
+    }),
+    createCustomer: b.mutation<CustomerDto, CustomerCreateInput>({
+      query: (body) => ({ url: '/customers', method: 'POST', body }),
+      invalidatesTags: ['Customer'],
+    }),
+    updateCustomer: b.mutation<CustomerDto, { id: string; body: CustomerUpdateInput }>({
+      query: ({ id, body }) => ({ url: `/customers/${id}`, method: 'PATCH', body }),
+      invalidatesTags: ['Customer', 'Order'],
+    }),
+    orders: b.query<OrderListItemDto[], { status?: OrderStatus; customerId?: string } | void>({
+      query: (p) => {
+        const params = new URLSearchParams();
+        if (p?.status) params.set('status', p.status);
+        if (p?.customerId) params.set('customerId', p.customerId);
+        const qs = params.toString();
+        return `/orders${qs ? `?${qs}` : ''}`;
+      },
+      providesTags: ['Order'],
+    }),
+    order: b.query<OrderDto, string>({
+      query: (id) => `/orders/${id}`,
+      providesTags: ['Order'],
+    }),
+    createOrder: b.mutation<OrderDto, OrderDraftInput>({
+      query: (body) => ({ url: '/orders', method: 'POST', body }),
+      invalidatesTags: ['Order', 'Dashboard'],
+    }),
+    updateOrder: b.mutation<OrderDto, { id: string; body: OrderDraftUpdateInput }>({
+      query: ({ id, body }) => ({ url: `/orders/${id}`, method: 'PATCH', body }),
+      invalidatesTags: ['Order', 'Dashboard'],
+    }),
+    orderAction: b.mutation<OrderDto, { id: string; action: 'approve-price' | 'confirm' | 'ship' }>(
+      {
+        query: ({ id, action }) => ({ url: `/orders/${id}/${action}`, method: 'POST' }),
+        invalidatesTags: ['Order', 'Dashboard', 'Product', 'Payment'],
+      },
+    ),
+    pickLine: b.mutation<OrderDto, { id: string; lineId: string; picked: boolean }>({
+      query: ({ id, lineId, picked }) => ({
+        url: `/orders/${id}/lines/${lineId}`,
+        method: 'PATCH',
+        body: { picked },
+      }),
+      // Optimistik: belgi darhol o'zgaradi, xato bo'lsa qaytadi
+      async onQueryStarted({ id, lineId, picked }, { dispatch, queryFulfilled }) {
+        const patch = dispatch(
+          api.util.updateQueryData('order', id, (draft) => {
+            const line = draft.lines.find((l) => l.id === lineId);
+            if (line) line.picked = picked;
+          }),
+        );
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(api.util.updateQueryData('order', id, () => data));
+        } catch {
+          patch.undo();
+        }
+      },
+    }),
+    orderShortages: b.query<ShortageDto[], string>({
+      query: (id) => `/orders/${id}/shortages`,
+      providesTags: ['Order', 'Product'],
+    }),
+    shortagePurchase: b.mutation<PurchaseDto, string>({
+      query: (id) => ({ url: `/orders/${id}/shortage-purchase`, method: 'POST' }),
+      invalidatesTags: ['Purchase'],
+    }),
+    completeOrder: b.mutation<OrderDto, { id: string; body: CompleteOrderInput }>({
+      query: ({ id, body }) => ({ url: `/orders/${id}/complete`, method: 'POST', body }),
+      invalidatesTags: ['Order', 'Dashboard', 'Customer'],
+    }),
+    cancelOrder: b.mutation<OrderDto, { id: string; body: CancelInput }>({
+      query: ({ id, body }) => ({ url: `/orders/${id}/cancel`, method: 'POST', body }),
+      invalidatesTags: ['Order', 'Dashboard', 'Product'],
+    }),
+    payments: b.query<PaymentDto[], { status?: PaymentStatus; orderId?: string } | void>({
+      query: (p) => {
+        const params = new URLSearchParams();
+        if (p?.status) params.set('status', p.status);
+        if (p?.orderId) params.set('orderId', p.orderId);
+        const qs = params.toString();
+        return `/payments${qs ? `?${qs}` : ''}`;
+      },
+      providesTags: ['Payment'],
+    }),
+    createPayment: b.mutation<PaymentDto, PaymentCreateInput>({
+      query: (body) => ({ url: '/payments', method: 'POST', body }),
+      invalidatesTags: ['Payment', 'Order', 'Dashboard'],
+    }),
+    confirmPayment: b.mutation<PaymentDto, string>({
+      query: (id) => ({ url: `/payments/${id}/confirm`, method: 'POST' }),
+      invalidatesTags: ['Payment', 'Order', 'Dashboard', 'Customer'],
+    }),
+    rejectPayment: b.mutation<PaymentDto, { id: string; body: CancelInput }>({
+      query: ({ id, body }) => ({ url: `/payments/${id}/reject`, method: 'POST', body }),
+      invalidatesTags: ['Payment', 'Order', 'Dashboard'],
+    }),
+    debts: b.query<
+      DebtDto[],
+      { filter?: 'open' | 'overdue' | 'due' | 'all'; customerId?: string } | void
+    >({
+      query: (p) => {
+        const params = new URLSearchParams();
+        if (p?.filter) params.set('filter', p.filter);
+        if (p?.customerId) params.set('customerId', p.customerId);
+        const qs = params.toString();
+        return `/debts${qs ? `?${qs}` : ''}`;
+      },
+      providesTags: ['Customer', 'Payment'],
+    }),
+    dashboard: b.query<DashboardDto, void>({
+      query: () => '/dashboard',
+      providesTags: ['Dashboard', 'Order', 'Payment'],
+    }),
   }),
 });
 
@@ -272,6 +427,26 @@ export const {
   useUpdatePurchaseMutation,
   useConfirmPurchaseMutation,
   useCancelPurchaseMutation,
+  useCustomersQuery,
+  useCustomerQuery,
+  useCreateCustomerMutation,
+  useUpdateCustomerMutation,
+  useOrdersQuery,
+  useOrderQuery,
+  useCreateOrderMutation,
+  useUpdateOrderMutation,
+  useOrderActionMutation,
+  usePickLineMutation,
+  useOrderShortagesQuery,
+  useShortagePurchaseMutation,
+  useCompleteOrderMutation,
+  useCancelOrderMutation,
+  usePaymentsQuery,
+  useCreatePaymentMutation,
+  useConfirmPaymentMutation,
+  useRejectPaymentMutation,
+  useDebtsQuery,
+  useDashboardQuery,
 } = api;
 
 /** API xatosidan i18n kalitini oladi */

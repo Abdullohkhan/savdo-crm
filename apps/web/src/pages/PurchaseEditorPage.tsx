@@ -3,7 +3,6 @@ import {
   canSeeCost,
   computeLandedCosts,
   COST_VISIBLE_ROLES,
-  type ProductDto,
   type PurchaseDraftInput,
   purchaseDraftSchema,
   type PurchaseDto,
@@ -14,6 +13,7 @@ import { type Resolver, useFieldArray, useForm, useWatch } from 'react-hook-form
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useParams } from 'react-router';
 import { ErrorText, PageHeader } from '@/components/common';
+import { ProductPicker } from '@/components/ProductPicker';
 import { PurchaseStatusBadge } from '@/components/PurchaseStatusBadge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -333,65 +333,6 @@ function DraftEditor({ purchase }: { purchase?: PurchaseDto }) {
       </div>
       {purchase && showCost && <CancelBox purchaseId={purchase.id} />}
     </form>
-  );
-}
-
-function ProductPicker({
-  products,
-  onPick,
-}: {
-  products: ProductDto[];
-  onPick: (p: ProductDto) => void;
-}) {
-  const { t } = useTranslation();
-  const [q, setQ] = useState('');
-  const query = q.trim().toLowerCase();
-  const matches = query
-    ? products
-        .filter(
-          (p) =>
-            p.name.toLowerCase().includes(query) ||
-            p.sku.toLowerCase().includes(query) ||
-            p.barcode === q.trim(),
-        )
-        .slice(0, 8)
-    : [];
-  return (
-    <div className="grid gap-1">
-      <Input
-        aria-label={t('purchases.addProduct')}
-        placeholder={t('purchases.addProduct')}
-        value={q}
-        onChange={(e) => setQ(e.target.value)}
-      />
-      {matches.length > 0 && (
-        <ul className="divide-y rounded-md border">
-          {matches.map((p) => (
-            <li key={p.id}>
-              <button
-                type="button"
-                className="flex w-full items-center justify-between gap-2 p-2 text-left text-sm hover:bg-accent"
-                onClick={() => {
-                  onPick(p);
-                  setQ('');
-                }}
-              >
-                <span className="truncate">{p.name}</span>
-                <span className="shrink-0 text-muted-foreground">{p.sku}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-      {query && matches.length === 0 && (
-        <p className="text-sm text-muted-foreground">
-          {t('purchases.noProductFound')}{' '}
-          <Link className="underline" to="/products/new">
-            {t('products.add')}
-          </Link>
-        </p>
-      )}
-    </div>
   );
 }
 

@@ -1,11 +1,25 @@
-import { CATALOG_EDIT_ROLES, PURCHASE_DRAFT_ROLES, Role } from '@savdo/shared';
+import {
+  CATALOG_EDIT_ROLES,
+  CUSTOMER_ROLES,
+  PAYMENT_RECEIVE_ROLES,
+  PURCHASE_DRAFT_ROLES,
+  Role,
+  SALES_ROLES,
+} from '@savdo/shared';
 import { Route, Routes } from 'react-router';
 import { RequireAuth, RequireRole } from '@/components/guards';
 import { Layout } from '@/components/Layout';
 import { CategoriesPage } from '@/pages/CategoriesPage';
+import { CustomerPage } from '@/pages/CustomerPage';
+import { CustomersPage } from '@/pages/CustomersPage';
 import { ForbiddenPage, NotFoundPage } from '@/pages/ErrorPages';
 import { HomePage } from '@/pages/HomePage';
 import { LoginPage } from '@/pages/LoginPage';
+import { MenuPage } from '@/pages/MenuPage';
+import { OrderEditorPage } from '@/pages/OrderEditorPage';
+import { OrderPage } from '@/pages/OrderPage';
+import { OrdersPage } from '@/pages/OrdersPage';
+import { PaymentsPage } from '@/pages/PaymentsPage';
 import { ProductFormPage } from '@/pages/ProductFormPage';
 import { ProductPage } from '@/pages/ProductPage';
 import { ProductsPage } from '@/pages/ProductsPage';
@@ -27,6 +41,49 @@ export function AppRoutes() {
         }
       >
         <Route index element={<HomePage />} />
+        <Route path="menu" element={<MenuPage />} />
+        <Route path="orders" element={<OrdersPage />} />
+        <Route
+          path="orders/new"
+          element={
+            <RequireRole roles={SALES_ROLES}>
+              <OrderEditorPage />
+            </RequireRole>
+          }
+        />
+        <Route path="orders/:id" element={<OrderPage />} />
+        <Route
+          path="orders/:id/edit"
+          element={
+            <RequireRole roles={SALES_ROLES}>
+              <OrderEditorPage />
+            </RequireRole>
+          }
+        />
+        <Route
+          path="customers"
+          element={
+            <RequireRole roles={CUSTOMER_ROLES}>
+              <CustomersPage />
+            </RequireRole>
+          }
+        />
+        <Route
+          path="customers/:id"
+          element={
+            <RequireRole roles={CUSTOMER_ROLES}>
+              <CustomerPage />
+            </RequireRole>
+          }
+        />
+        <Route
+          path="payments"
+          element={
+            <RequireRole roles={PAYMENT_RECEIVE_ROLES}>
+              <PaymentsPage />
+            </RequireRole>
+          }
+        />
         <Route path="products" element={<ProductsPage />} />
         <Route
           path="products/new"

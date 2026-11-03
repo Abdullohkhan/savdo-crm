@@ -9,7 +9,11 @@
     "settings": "Settings",
     "logout": "Log out",
     "products": "Products",
-    "purchases": "Receiving"
+    "purchases": "Receiving",
+    "orders": "Orders",
+    "customers": "Customers",
+    "payments": "Payments",
+    "menu": "Menu"
   },
   "theme": {
     "label": "Theme",
@@ -41,7 +45,15 @@
     "role": "Role: {{role}}",
     "placeholder": "Your tasks for today will appear here in later stages.",
     "lowStock": "Low stock: {{count}}",
-    "showAll": "Show all"
+    "showAll": "Show all",
+    "priceApprovals": "Price approvals",
+    "paymentsToConfirm": "Payments to confirm",
+    "awaitingAdvance": "Awaiting advance",
+    "toPick": "Orders to pick",
+    "toComplete": "Shipped, not completed",
+    "drafts": "My drafts",
+    "debtsDue": "Credit due soon or overdue",
+    "noTasks": "Nothing to do right now"
   },
   "users": {
     "title": "Staff",
@@ -111,7 +123,8 @@
     "tooLarge": "Value is too large",
     "quantityDecimals": "At most 3 decimal places",
     "reasonRequired": "Enter a reason (min. 3 characters)",
-    "duplicateProduct": "The same product is added twice"
+    "duplicateProduct": "The same product is added twice",
+    "date": "Invalid date"
   },
   "units": {
     "dona": "pcs",
@@ -222,5 +235,110 @@
     "markupForbidden": "Only the owner or accountant can change markup",
     "priceForbidden": "Only the owner or accountant can change prices",
     "skuOrBarcodeTaken": "This SKU or barcode is already used"
+  },
+  "customerType": {
+    "JISMONIY": "Individual",
+    "YURIDIK": "Company"
+  },
+  "orderStatus": {
+    "QORALAMA": "Draft",
+    "TASDIQLANGAN": "Confirmed",
+    "AVANS_KUTILMOQDA": "Awaiting advance",
+    "YIGILMOQDA": "Picking",
+    "JONATILDI": "Shipped",
+    "YAKUNLANDI": "Completed",
+    "BEKOR": "Cancelled"
+  },
+  "paymentMethod": {
+    "NAQD": "Cash",
+    "KARTA": "Card",
+    "OTKAZMA": "Bank transfer"
+  },
+  "paymentStatus": {
+    "KUTILMOQDA": "Pending",
+    "TASDIQLANGAN": "Confirmed",
+    "RAD_ETILGAN": "Rejected"
+  },
+  "customers": {
+    "title": "Customers",
+    "search": "Name, phone or TIN",
+    "empty": "No customers found",
+    "type": "Type",
+    "name": "Name",
+    "phone": "Phone",
+    "creditLimit": "Credit limit",
+    "debt": "Debt",
+    "limitForbidden": "Only the owner can change the credit limit"
+  },
+  "debts": {
+    "title": "Credit",
+    "due": "due",
+    "dueDate": "Due date",
+    "overdue": "overdue"
+  },
+  "orders": {
+    "title": "Orders",
+    "new": "New order",
+    "numberShort": "Order #{{number}}",
+    "allStatuses": "All statuses",
+    "empty": "No orders",
+    "customer": "Customer",
+    "chooseCustomer": "Choose a customer",
+    "newCustomerHint": "Add a new customer",
+    "seller": "Seller",
+    "listPrice": "List price",
+    "price": "Price",
+    "lineTotal": "Amount",
+    "discount": "discount {{percent}}%",
+    "paid": "Paid",
+    "profit": "Profit",
+    "advance": "Advance ({{percent}}%)",
+    "needsApproval": "approval needed",
+    "belowCost": "Below cost",
+    "belowCostWarning": "Some prices are below cost — the owner must approve",
+    "approvePrice": "Approve prices",
+    "confirm": "Confirm",
+    "stages": "Stages",
+    "picked": "{{name}} picked",
+    "pickedShort": "picked",
+    "pickHint": "Mark every item as picked before shipping",
+    "shortagesTitle": "Missing items",
+    "missing": "missing {{missing}} {{unit}} (have {{available}})",
+    "createPurchase": "Create purchase draft",
+    "ship": "Ship",
+    "complete": "Complete",
+    "completeWithDebt": "Complete on credit",
+    "debtHint": "Unpaid: {{amount}} — will be recorded as credit",
+    "pendingFirst": "Pending payments must be confirmed first",
+    "cancel": "Cancel order",
+    "cancelShippedOwnerOnly": "Only the owner can cancel a shipped order",
+    "cannotCancel": "This order cannot be cancelled",
+    "creditLimitExceeded": "Customer's credit limit is exceeded",
+    "customerNotFound": "Customer not found or inactive",
+    "dueDatePast": "Due date cannot be in the past",
+    "dueDateRequired": "Not fully paid — enter a due date",
+    "noApprovalNeeded": "No approval needed",
+    "noLines": "The order has no items",
+    "noShortage": "Nothing is missing",
+    "notAllPicked": "Not all items are picked",
+    "paymentsPending": "There are unconfirmed payments",
+    "priceApprovalRequired": "Owner approval needed for prices below cost",
+    "productNotFound": "Product not found or inactive",
+    "wrongStatus": "This action is not allowed at this stage"
+  },
+  "payments": {
+    "title": "Payments",
+    "all": "All",
+    "empty": "No payments",
+    "receive": "Receive payment",
+    "method": "Method",
+    "advance": "advance",
+    "confirm": "Confirm",
+    "reject": "Reject",
+    "pendingSum": "pending: {{amount}}",
+    "dueHint": "You can receive up to {{amount}}",
+    "exceedsDue": "Amount exceeds what is due",
+    "notPending": "Payment was already processed",
+    "nothingDue": "Nothing is due"
   }
 }

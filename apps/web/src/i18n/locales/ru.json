@@ -9,7 +9,11 @@
     "settings": "Настройки",
     "logout": "Выйти",
     "products": "Товары",
-    "purchases": "Приход"
+    "purchases": "Приход",
+    "orders": "Заказы",
+    "customers": "Клиенты",
+    "payments": "Платежи",
+    "menu": "Меню"
   },
   "theme": {
     "label": "Тема",
@@ -41,7 +45,15 @@
     "role": "Роль: {{role}}",
     "placeholder": "Здесь на следующих этапах появятся задачи на сегодня.",
     "lowStock": "Заканчиваются: {{count}}",
-    "showAll": "Показать все"
+    "showAll": "Показать все",
+    "priceApprovals": "Ожидают согласования цены",
+    "paymentsToConfirm": "Платежи на подтверждение",
+    "awaitingAdvance": "Ожидают аванс",
+    "toPick": "Заказы к сборке",
+    "toComplete": "Отгружены, не завершены",
+    "drafts": "Мои черновики",
+    "debtsDue": "Долги: срок близко или прошёл",
+    "noTasks": "Пока задач нет"
   },
   "users": {
     "title": "Сотрудники",
@@ -111,7 +123,8 @@
     "tooLarge": "Слишком большое значение",
     "quantityDecimals": "Не более 3 знаков после запятой",
     "reasonRequired": "Укажите причину (мин. 3 символа)",
-    "duplicateProduct": "Один товар добавлен дважды"
+    "duplicateProduct": "Один товар добавлен дважды",
+    "date": "Неверная дата"
   },
   "units": {
     "dona": "шт",
@@ -222,5 +235,110 @@
     "markupForbidden": "Наценку меняют только владелец или бухгалтер",
     "priceForbidden": "Цену меняют только владелец или бухгалтер",
     "skuOrBarcodeTaken": "Этот артикул или штрихкод уже занят"
+  },
+  "customerType": {
+    "JISMONIY": "Физ. лицо",
+    "YURIDIK": "Юр. лицо"
+  },
+  "orderStatus": {
+    "QORALAMA": "Черновик",
+    "TASDIQLANGAN": "Подтверждён",
+    "AVANS_KUTILMOQDA": "Ожидает аванс",
+    "YIGILMOQDA": "Сборка",
+    "JONATILDI": "Отгружен",
+    "YAKUNLANDI": "Завершён",
+    "BEKOR": "Отменён"
+  },
+  "paymentMethod": {
+    "NAQD": "Наличные",
+    "KARTA": "Карта",
+    "OTKAZMA": "Перечисление"
+  },
+  "paymentStatus": {
+    "KUTILMOQDA": "Ожидает",
+    "TASDIQLANGAN": "Подтверждён",
+    "RAD_ETILGAN": "Отклонён"
+  },
+  "customers": {
+    "title": "Клиенты",
+    "search": "Имя, телефон или ИНН",
+    "empty": "Клиенты не найдены",
+    "type": "Тип",
+    "name": "Наименование / ФИО",
+    "phone": "Телефон",
+    "creditLimit": "Лимит долга",
+    "debt": "Задолженность",
+    "limitForbidden": "Лимит долга меняет только владелец"
+  },
+  "debts": {
+    "title": "Долг",
+    "due": "срок",
+    "dueDate": "Срок оплаты",
+    "overdue": "просрочен"
+  },
+  "orders": {
+    "title": "Заказы",
+    "new": "Новый заказ",
+    "numberShort": "Заказ №{{number}}",
+    "allStatuses": "Все статусы",
+    "empty": "Заказов нет",
+    "customer": "Клиент",
+    "chooseCustomer": "Выберите клиента",
+    "newCustomerHint": "Добавить клиента",
+    "seller": "Продавец",
+    "listPrice": "Прайс",
+    "price": "Цена",
+    "lineTotal": "Сумма",
+    "discount": "скидка {{percent}}%",
+    "paid": "Оплачено",
+    "profit": "Прибыль",
+    "advance": "Аванс ({{percent}}%)",
+    "needsApproval": "нужно согласование",
+    "belowCost": "Ниже себестоимости",
+    "belowCostWarning": "Некоторые цены ниже себестоимости — нужно согласие владельца",
+    "approvePrice": "Согласовать цены",
+    "confirm": "Подтвердить",
+    "stages": "Этапы",
+    "picked": "{{name}} собран",
+    "pickedShort": "собран",
+    "pickHint": "Отметьте все товары собранными перед отгрузкой",
+    "shortagesTitle": "Не хватает товаров",
+    "missing": "не хватает {{missing}} {{unit}} (есть {{available}})",
+    "createPurchase": "Создать черновик прихода",
+    "ship": "Отгрузить",
+    "complete": "Завершить",
+    "completeWithDebt": "Завершить в долг",
+    "debtHint": "Не оплачено: {{amount}} — будет записано в долг",
+    "pendingFirst": "Сначала подтвердите ожидающие платежи",
+    "cancel": "Отменить заказ",
+    "cancelShippedOwnerOnly": "Отгруженный заказ отменяет только владелец",
+    "cannotCancel": "Этот заказ нельзя отменить",
+    "creditLimitExceeded": "Превышен лимит долга клиента",
+    "customerNotFound": "Клиент не найден или неактивен",
+    "dueDatePast": "Срок не может быть в прошлом",
+    "dueDateRequired": "Оплачено не полностью — укажите срок долга",
+    "noApprovalNeeded": "Согласование не требуется",
+    "noLines": "В заказе нет товаров",
+    "noShortage": "Всего хватает",
+    "notAllPicked": "Не все товары собраны",
+    "paymentsPending": "Есть неподтверждённые платежи",
+    "priceApprovalRequired": "Нужно согласие владельца на цену ниже себестоимости",
+    "productNotFound": "Товар не найден или неактивен",
+    "wrongStatus": "Это действие недоступно на этом этапе"
+  },
+  "payments": {
+    "title": "Платежи",
+    "all": "Все",
+    "empty": "Платежей нет",
+    "receive": "Принять оплату",
+    "method": "Способ",
+    "advance": "аванс",
+    "confirm": "Подтвердить",
+    "reject": "Отклонить",
+    "pendingSum": "ожидает: {{amount}}",
+    "dueHint": "Можно принять до {{amount}}",
+    "exceedsDue": "Сумма больше остатка",
+    "notPending": "Платёж уже обработан",
+    "nothingDue": "Оплачивать нечего"
   }
 }
