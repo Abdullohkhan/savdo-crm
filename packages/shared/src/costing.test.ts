@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { allocateExpenses, computeLandedCosts, salePriceFrom } from './costing.js';
+import {
+  advanceRequired,
+  allocateExpenses,
+  computeLandedCosts,
+  discountPercent,
+  orderLineTotal,
+  salePriceFrom,
+} from './costing.js';
 import { purchaseDraftSchema, quantitySchema } from './schemas.js';
 
 describe('allocateExpenses', () => {
@@ -61,5 +68,18 @@ describe('schemas', () => {
       ],
     });
     expect(r.success).toBe(false);
+  });
+});
+
+describe('savdo hisoblari', () => {
+  it('avans yuqoriga yaxlitlanadi', () => {
+    expect(advanceRequired(1_000_000, 30)).toBe(300_000);
+    expect(advanceRequired(1_001, 30)).toBe(301);
+    expect(advanceRequired(5_000, 0)).toBe(0);
+  });
+  it('qator summasi va chegirma', () => {
+    expect(orderLineTotal(2.5, 10_001)).toBe(25_003);
+    expect(discountPercent(10_000, 9_000)).toBe(10);
+    expect(discountPercent(10_000, 11_000)).toBe(0);
   });
 });

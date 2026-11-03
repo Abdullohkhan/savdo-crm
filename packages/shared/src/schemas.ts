@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { isValidQuantity } from './costing.js';
-import { LOCALES, ROLES, UNITS } from './enums.js';
+import { CUSTOMER_TYPES, LOCALES, PAYMENT_METHODS, ROLES, UNITS } from './enums.js';
 
 /**
  * Xato xabarlari i18n kalitlari ko'rinishida (masalan `validation.required`) —
@@ -185,3 +185,73 @@ export const stockAdjustmentSchema = z.object({
   reason: z.string().trim().min(3, { message: 'validation.reasonRequired' }).max(500),
 });
 export type StockAdjustmentInput = z.infer<typeof stockAdjustmentSchema>;
+
+// ---------- 3-bosqich: savdo ----------
+
+export const customerCreateSchema = z.object({
+  type: z.enum(CUSTOMER_TYPES),
+  name: nameSchema,
+  phone: z
+    .string()
+    .trim()
+    .regex(/^(\+?\d{9,15})?$/, { message: 'validation.phone' })
+    .optional(),
+  inn: z
+    .string()
+    .trim()
+    .regex(/^(\d{9}|\d{14})?$/, { message: 'validation.inn' })
+    .optional(),
+  address: optionalText(300).optional(),
+  /** Nasiya limiti, so'm. Faqat OWNER o'zgartiradi */
+  creditLimit: moneySchema.optional(),
+});
+export type CustomerCreateInput = z.infer<typeof customerCreateSchema>;
+
+export const customerUpdateSchema = customerCreateSchema
+  .extend({ isActive: z.boolean() })
+  .partial();
+export type CustomerUpdateInput = z.infer<typeof customerUpdateSchema>;
+
+export const orderLineInputSchema = z.object({
+  productId: uuid,
+  quantity: quantitySchema,
+  /** Chegirmadan keyingi birlik narxi; berilmasa — tovarning sotuv narxi */
+  price: moneySchema.optional(),
+});
+export type OrderLineInput = z.infer<typeof orderLineInputSchema>;
+
+export const orderDraftSchema = z.object({
+  customerId: uuid,
+  note: optionalText(500).optional(),
+  lines: z
+    .array(orderLineInputSchema)
+    .max(500)
+    .refine((ls) => new Set(ls.map((l) => l.productId)).size === ls.length, {
+      message: 'validation.duplicateProduct',
+    }),
+});
+export type OrderDraftInput = z.infer<typeof orderDraftSchema>;
+export const orderDraftUpdateSchema = orderDraftSchema.partial();
+export type OrderDraftUpdateInput = z.infer<typeof orderDraftUpdateSchema>;
+
+export const pickLineSchema = z.object({ picked: z.boolean() });
+export type PickLineInput = z.infer<typeof pickLineSchema>;
+
+/** Yakunlash: to'liq to'lanmagan bo'lsa — nasiya muddati (YYYY-MM-DD) */
+export const completeOrderSchema = z.object({
+  dueDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, { message: 'validation.date' })
+    .optional(),
+});
+export type CompleteOrderInput = z.infer<typeof completeOrderSchema>;
+
+export const paymentCreateSchema = z.object({
+  orderId: uuid,
+  method: z.enum(PAYMENT_METHODS),
+  amount: moneySchema.refine((v) => v > 0, { message: 'validation.positive' }),
+  /** Berilmasa: buyurtma avans kutayotgan bo'lsa — avans */
+  isAdvance: z.boolean().optional(),
+  note: optionalText(300).optional(),
+});
+export type PaymentCreateInput = z.infer<typeof paymentCreateSchema>;

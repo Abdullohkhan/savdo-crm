@@ -41,24 +41,33 @@ model Organization {
   purchases      Purchase[]
   movements      StockMovement[]
   auditLogs      AuditLog[]
+  customers      Customer[]
+  orders         SalesOrder[]
+  payments       Payment[]
+  debts          Debt[]
 }
 
 model User {
-  id             String          @id @default(uuid())
-  organizationId String
-  organization   Organization    @relation(fields: [organizationId], references: [id])
-  name           String
-  phone          String
-  passwordHash   String
-  role           Role
-  isActive       Boolean         @default(true)
-  locale         Locale          @default(uz)
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  refreshTokens  RefreshToken[]
-  purchases      Purchase[]
-  movements      StockMovement[]
-  auditLogs      AuditLog[]
+  id              String           @id @default(uuid())
+  organizationId  String
+  organization    Organization     @relation(fields: [organizationId], references: [id])
+  name            String
+  phone           String
+  passwordHash    String
+  role            Role
+  isActive        Boolean          @default(true)
+  locale          Locale           @default(uz)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  refreshTokens   RefreshToken[]
+  purchases       Purchase[]
+  movements       StockMovement[]
+  auditLogs       AuditLog[]
+  ordersSold      SalesOrder[]     @relation("OrderSeller")
+  ordersApproved  SalesOrder[]     @relation("OrderPriceApprover")
+  statusLogs      OrderStatusLog[]
+  paymentsTaken   Payment[]        @relation("PaymentReceiver")
+  paymentsChecked Payment[]        @relation("PaymentConfirmer")
 
   @@unique([organizationId, phone])
   @@index([phone])
@@ -109,6 +118,7 @@ model Warehouse {
   createdAt      DateTime        @default(now())
   movements      StockMovement[]
   purchases      Purchase[]
+  orders         SalesOrder[]
 
   @@index([organizationId])
 }
@@ -132,29 +142,30 @@ model Category {
 }
 
 model Product {
-  id             String          @id @default(uuid())
+  id             String           @id @default(uuid())
   organizationId String
-  organization   Organization    @relation(fields: [organizationId], references: [id])
+  organization   Organization     @relation(fields: [organizationId], references: [id])
   sku            String
   /// Bo'sh satr emas — null (unique indeks uchun)
   barcode        String?
   name           String
-  unit           Unit            @default(dona)
+  unit           Unit             @default(dona)
   categoryId     String?
-  category       Category?       @relation(fields: [categoryId], references: [id])
+  category       Category?        @relation(fields: [categoryId], references: [id])
   /// Sotuv narxi, butun so'm
-  salePrice      Int             @default(0)
+  salePrice      Int              @default(0)
   /// true — narx qo'lda qo'yilgan, kirimda avtomatik o'zgarmaydi
-  priceManual    Boolean         @default(false)
+  priceManual    Boolean          @default(false)
   /// O'rtacha tortilgan tannarx, butun so'm
-  avgCost        Int             @default(0)
-  minStock       Decimal         @default(0) @db.Decimal(14, 3)
+  avgCost        Int              @default(0)
+  minStock       Decimal          @default(0) @db.Decimal(14, 3)
   imageUrl       String?
-  isActive       Boolean         @default(true)
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  isActive       Boolean          @default(true)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
   purchaseLines  PurchaseLine[]
   movements      StockMovement[]
+  orderLines     SalesOrderLine[]
 
   @@unique([organizationId, sku])
   @@unique([organizationId, barcode])
@@ -243,6 +254,8 @@ model StockMovement {
   unitCost       Int
   purchaseId     String?
   purchase       Purchase?    @relation(fields: [purchaseId], references: [id])
+  orderId        String?
+  order          SalesOrder?  @relation(fields: [orderId], references: [id])
   note           String       @default("")
   userId         String
   user           User         @relation(fields: [userId], references: [id])
@@ -264,4 +277,157 @@ model AuditLog {
   createdAt      DateTime     @default(now())
 
   @@index([organizationId, entity, entityId])
+}
+
+// ---------- 3-bosqich: savdo ----------
+
+enum CustomerType {
+  JISMONIY
+  YURIDIK
+}
+
+enum OrderStatus {
+  QORALAMA
+  TASDIQLANGAN
+  AVANS_KUTILMOQDA
+  YIGILMOQDA
+  JONATILDI
+  YAKUNLANDI
+  BEKOR
+}
+
+enum PaymentMethod {
+  NAQD
+  KARTA
+  OTKAZMA
+}
+
+enum PaymentStatus {
+  KUTILMOQDA
+  TASDIQLANGAN
+  RAD_ETILGAN
+}
+
+model Customer {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  type           CustomerType @default(JISMONIY)
+  name           String
+  phone          String       @default("")
+  inn            String       @default("")
+  address        String       @default("")
+  /// Nasiya limiti, butun so'm; 0 — nasiya berilmaydi
+  creditLimit    BigInt       @default(0)
+  isActive       Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  orders         SalesOrder[]
+  debts          Debt[]
+
+  @@index([organizationId, name])
+}
+
+model SalesOrder {
+  id                String           @id @default(uuid())
+  organizationId    String
+  organization      Organization     @relation(fields: [organizationId], references: [id])
+  number            Int
+  warehouseId       String
+  warehouse         Warehouse        @relation(fields: [warehouseId], references: [id])
+  customerId        String
+  customer          Customer         @relation(fields: [customerId], references: [id])
+  sellerId          String
+  seller            User             @relation("OrderSeller", fields: [sellerId], references: [id])
+  status            OrderStatus      @default(QORALAMA)
+  note              String           @default("")
+  /// Tasdiqlash paytidagi korxona avans foizi
+  advancePercent    Int              @default(0)
+  priceApprovedById String?
+  priceApprovedBy   User?            @relation("OrderPriceApprover", fields: [priceApprovedById], references: [id])
+  cancelReason      String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  lines             SalesOrderLine[]
+  statusLogs        OrderStatusLog[]
+  payments          Payment[]
+  debt              Debt?
+  movements         StockMovement[]
+
+  @@unique([organizationId, number])
+  @@index([organizationId, status])
+  @@index([organizationId, sellerId])
+}
+
+model SalesOrderLine {
+  id        String     @id @default(uuid())
+  orderId   String
+  order     SalesOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product    @relation(fields: [productId], references: [id])
+  quantity  Decimal    @db.Decimal(14, 3)
+  /// Qo'shilgan paytdagi sotuv narxi
+  listPrice Int
+  /// Chegirmadan keyingi birlik narxi
+  price     Int
+  picked    Boolean    @default(false)
+  /// Jo'natishdagi tannarx nusxasi (foyda hisobi uchun)
+  unitCost  Int?
+
+  @@unique([orderId, productId])
+}
+
+model OrderStatusLog {
+  id        String       @id @default(uuid())
+  orderId   String
+  order     SalesOrder   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  from      OrderStatus?
+  to        OrderStatus
+  userId    String
+  user      User         @relation(fields: [userId], references: [id])
+  reason    String?
+  createdAt DateTime     @default(now())
+
+  @@index([orderId, createdAt])
+}
+
+model Payment {
+  id             String        @id @default(uuid())
+  organizationId String
+  organization   Organization  @relation(fields: [organizationId], references: [id])
+  orderId        String
+  order          SalesOrder    @relation(fields: [orderId], references: [id])
+  method         PaymentMethod
+  amount         BigInt
+  isAdvance      Boolean       @default(false)
+  status         PaymentStatus @default(KUTILMOQDA)
+  note           String        @default("")
+  receivedById   String
+  receivedBy     User          @relation("PaymentReceiver", fields: [receivedById], references: [id])
+  confirmedById  String?
+  confirmedBy    User?         @relation("PaymentConfirmer", fields: [confirmedById], references: [id])
+  confirmedAt    DateTime?
+  rejectReason   String?
+  createdAt      DateTime      @default(now())
+
+  @@index([organizationId, status])
+  @@index([orderId])
+}
+
+model Debt {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  orderId        String       @unique
+  order          SalesOrder   @relation(fields: [orderId], references: [id])
+  customerId     String
+  customer       Customer     @relation(fields: [customerId], references: [id])
+  amount         BigInt
+  remaining      BigInt
+  dueDate        DateTime     @db.Date
+  closedAt       DateTime?
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId, closedAt, dueDate])
+  @@index([customerId])
 }

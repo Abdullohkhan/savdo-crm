@@ -35,7 +35,7 @@ export async function createTestApp(): Promise<TestCtx> {
 
 export async function resetDb(prisma: PrismaService): Promise<void> {
   await prisma.$executeRawUnsafe(
-    'TRUNCATE "AuditLog", "StockMovement", "PurchaseExpense", "PurchaseLine", "Purchase", "Supplier", "Product", "Category", "Warehouse", "RefreshToken", "User", "Organization" RESTART IDENTITY CASCADE',
+    'TRUNCATE "Debt", "Payment", "OrderStatusLog", "SalesOrderLine", "SalesOrder", "Customer", "AuditLog", "StockMovement", "PurchaseExpense", "PurchaseLine", "Purchase", "Supplier", "Product", "Category", "Warehouse", "RefreshToken", "User", "Organization" RESTART IDENTITY CASCADE',
   );
 }
 

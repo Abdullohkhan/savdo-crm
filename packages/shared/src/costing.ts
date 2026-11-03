@@ -77,3 +77,21 @@ export function computeLandedCosts(
     };
   });
 }
+
+/** Buyurtma qatori summasi: round(miqdor × narx) */
+export function orderLineTotal(quantity: number, price: number): number {
+  return Math.round(quantity * price);
+}
+
+/** Talab qilinadigan avans: jami × avans%, yuqoriga yaxlitlanadi */
+export function advanceRequired(total: number, advancePercent: number): number {
+  assertSafeInt(total, 'total');
+  if (advancePercent <= 0) return 0;
+  return Math.ceil((total * advancePercent) / 100);
+}
+
+/** Chegirma foizi (ko'rsatish uchun), butun songa yaxlitlanadi */
+export function discountPercent(listPrice: number, price: number): number {
+  if (listPrice <= 0 || price >= listPrice) return 0;
+  return Math.round(((listPrice - price) / listPrice) * 100);
+}

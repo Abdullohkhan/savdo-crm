@@ -58,3 +58,25 @@ export async function audit(
     },
   });
 }
+
+/** Qatorni qulflash (SELECT ... FOR UPDATE) — jadval nomi faqat kod ichidan beriladi */
+export async function lockRow(
+  tx: Tx,
+  table: 'SalesOrder' | 'Customer' | 'Payment' | 'Purchase',
+  id: string,
+): Promise<void> {
+  await tx.$queryRawUnsafe(`SELECT id FROM "${table}" WHERE id = $1 FOR UPDATE`, id);
+}
+
+/** Bugungi sana Toshkent vaqti bo'yicha (YYYY-MM-DD) */
+export function todayIso(now = new Date()): string {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Tashkent' }).format(now);
+}
+
+export function isoToDate(iso: string): Date {
+  return new Date(`${iso}T00:00:00.000Z`);
+}
+
+export function dateToIso(d: Date): string {
+  return d.toISOString().slice(0, 10);
+}

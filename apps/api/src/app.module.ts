@@ -9,6 +9,7 @@ import { APP_CONFIG, type AppConfig } from './config.js';
 import { OrganizationModule } from './organization/organization.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { PurchasesModule } from './purchases/purchases.module.js';
+import { SalesModule } from './sales/sales.module.js';
 import { StockModule } from './stock/stock.module.js';
 import { UsersModule } from './users/users.module.js';
 
@@ -36,6 +37,7 @@ export class AppModule {
         StockModule,
         CatalogModule,
         PurchasesModule,
+        SalesModule,
       ],
       providers: [
         // Tartib muhim: avval autentifikatsiya, keyin rol

@@ -94,7 +94,11 @@ export class ProductsService {
       where: { organizationId: actor.organizationId, productId: id },
       orderBy: { createdAt: 'desc' },
       take: 200,
-      include: { user: { select: { name: true } }, purchase: { select: { number: true } } },
+      include: {
+        user: { select: { name: true } },
+        purchase: { select: { number: true } },
+        order: { select: { number: true } },
+      },
     });
     const show = canSeeCost(actor.role);
     return rows.map((m) => ({
@@ -103,6 +107,8 @@ export class ProductsService {
       quantity: qty(m.quantity),
       purchaseId: m.purchaseId,
       purchaseNumber: m.purchase?.number ?? null,
+      orderId: m.orderId,
+      orderNumber: m.order?.number ?? null,
       note: m.note,
       userName: m.user.name,
       createdAt: m.createdAt.toISOString(),
