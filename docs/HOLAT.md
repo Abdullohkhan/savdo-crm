@@ -1,5 +1,27 @@
 # Holat
 
+## 2026-11-04 — Yangi reja (ERP g'oyalari + 1C o'rnini bosish)
+Tahlil: `docs/erp-farq.md` (ERP funksiyalari jadvali + 1C'dan ko'chirish rejasi). Mijoz Atoyo 1C'dan to'liq chiqadi.
+⚠️ `Abdullohkhan/erp` repo'si bu sessiyaga ulanmadi — jadval topshiriqdagi funksiyalar ro'yxatidan tuzildi, ✱ qatorlar ERP kodi bilan tekshiriladi.
+
+### Qolgan bosqichlar
+- **4 — Hujjat va xabar** (`docs/prompts/4-hujjat-xabar.md`): shartnoma/hisob-faktura/yuk xati/akt — HTML shablon → PDF, OWNER shablonni tahrirlaydi, hujjat raqamlash.
+  `Notification` (ilova ichida) + Telegram bot, nasiya eslatmalari; TASDIQLANGAN → AVANS_KUTILMOQDA shartnoma bilan, YAKUNLANDI akt bilan.
+- **5 — ERP'dan qo'shiladiganlar**: buyurtma turi `YIGISH` (komplekt zaxirasi, TEXNIK yig'adi, seriya raqami, sinov, akt, yetkazish),
+  `PurchaseRequest` (ta'minot), kirim xarajat turlari (bojxona/deklarant), ta'minotchi to'lovi va qarzi, rollar TEXNIK/TAMINOT/KURER + ruxsatlar. Avval ERP kodi bilan ✱ qatorlarni solishtirish.
+- **6 — Hisobotlar**: savdo, foyda (OWNER/BUXGALTER), qoldiq, qarzdorlar, ta'minotchi qarzlari; Excel eksport.
+- **7 — Production deploy**: Docker Compose + Caddy (bitta domen, `/api`), PostgreSQL zaxira nusxa (kunlik, tashqariga), monitoring, fayl saqlash joyi.
+- **8 — 1C'dan ko'chirish**: import ekrani (xlsx/csv shablonlar, dry-run, yig'indilarni solishtirish), `BOSHLANGICH` qoldiq, buyurtmasiz `Debt`; sinov serverida mashq → kesim sanasi → prodga import.
+- **9 — Shtrix-kod**: telefon kamerasi (kirim, yig'ish, qidiruv).
+- Eslatma: spec 7-bo'limidagi bosqichlar jadvali shu rejaga moslab yangilanishi kerak (5 Hisobot → 6, 6 Deploy → 7, 7 Shtrix-kod → 9).
+
+### SAVOL (yangi)
+- SAVOL: ERP repo'sini keyingi sessiyaga ulash mumkinmi (✱ qatorlarni tekshirish uchun)?
+- SAVOL: Atoyo'da yangi rollar kerakmi — TEXNIK (injener/yig'uvchi), TAMINOT (xarid), KURER? Deklarant xodimmi yoki tashqi xizmat (faqat xarajat)?
+- SAVOL: Atoyo qaysi 1C ishlatadi (Управление торговлей / Бухгалтерия / УНФ, versiya)? Ta'minotchiga qarzlar ham 1C'da yuritiladimi?
+- SAVOL: Seriya raqami va kafolat hisobi kerakmi? Servis (ta'mir) jarayoni ham kerakmi?
+- Oldingi bosqichlardagi SAVOL'lar (pastda) hali javobsiz.
+
 ## 2026-11-03 — 3-bosqich (savdo) ✅
 Prompt: `docs/prompts/3-savdo.md` (spec asosida shu sessiyada yozildi).
 - ✅ Prisma: `Customer` (jismoniy/yuridik, nasiya limiti), `SalesOrder` + `SalesOrderLine` + `OrderStatusLog`, `Payment`, `Debt`.
