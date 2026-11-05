@@ -1,11 +1,61 @@
 # Holat
 
+## 2026-11-05 — 4-bosqich (hujjat va xabar) ✅
+Prompt: `docs/prompts/4-hujjat-xabar.md`.
+- ✅ Prisma: `DocumentTemplate` (tur × uz/ru, `isDefault`, versiya), `Document` (raqam, tayyor HTML nusxasi, shablon versiyasi, `YARATILDI | IMZOLANDI | BEKOR`),
+  `DocumentCounter` (korxona + tur + yil), `Notification` (i18n kalit + parametrlar, havola, `readAt`, `telegramSentAt`, `dedupeKey`),
+  `User.telegramChatId` + bir martalik bog'lash kodi (sha256, 10 daqiqa). Korxona: telefon, rahbar, bank rekvizitlari, hujjat tili, 4 ta prefiks.
+- ✅ Hujjatlar: Handlebars (alohida muhit, faqat ichki helperlar, HTML escape; `{{{ }}}`, partial, skript, `on*`, `javascript:` taqiqlangan).
+  O'zgaruvchilar: korxona, mijoz, buyurtma, qatorlar, jami, **summa so'z bilan** (uz/ru, `packages/shared/words.ts`), avans, to'langan/qoldiq, shartnoma raqami.
+  Kontekstda tannarx/foyda maydonlari umuman yo'q (test bilan tekshirilgan).
+- ✅ Raqam `SH-2026-0001`: `INSERT … ON CONFLICT DO UPDATE … RETURNING` — tranzaksiyada band qilinadi, parallel so'rovlarda takrorlanmaydi.
+- ✅ Oqim: TASDIQLANGAN → shartnoma avtomatik (avans 0% bo'lsa ham) → AVANS_KUTILMOQDA; JO'NATILDI → yuk xati, hisob-faktura, akt;
+  YAKUNLANDI faqat akt `IMZOLANDI` bo'lsa (belgilaydi: SOTUVCHI/BUXGALTER/OWNER). Bekor buyurtma hujjatlari `BEKOR` (o'chirilmaydi).
+  Qayta yaratish — yangi raqam, eskisi `BEKOR`; shablon o'zgarsa eski hujjat o'zgarmaydi.
+- ✅ PDF: **pdfmake + Roboto** (Chromium/puppeteer yo'q, yengil): HTML'ning hujjat uchun yetarli qismi (h1–h3, p, b/i/u, br, hr, jadval colspan/width, ro'yxat),
+  A4, lotin + kirill; `ʻ ʼ` → `‘ ’` (shriftda bor). Tashqi URL/fayl o'qish taqiqlangan.
+- ✅ Bildirishnomalar: AVANS_KUTILMOQDA → BUXGALTER, YIG'ILMOQDA → OMBORCHI, JO'NATILDI → mas'ul sotuvchi, yangi to'lov → BUXGALTER,
+  to'lov rad → qabul qilgan xodim, tannarxdan past narx → OWNER. Amalni bajargan xodimning o'ziga yuborilmaydi.
+- ✅ Kunlik eslatmalar (`@nestjs/schedule`, 09:00 Toshkent, idempotent `dedupeKey`): nasiya — muddatdan 3 kun oldin, muddat o'tgan kuni va keyin har 3 kunda
+  (sotuvchi + OWNER); kam qoldiq — kuniga bir marta (OMBORCHI + OWNER).
+- ✅ Telegram (grammY): Sozlamalar → kod → botga `/start <kod>`; xabar foydalanuvchi tilida, havola bilan. Outbox: Telegram ishlamasa ilova ichidagisi saqlanadi,
+  30 s da qayta urinish (3 marta, 24 soat). `TELEGRAM_BOT_TOKEN` bo'sh bo'lsa bot o'chiq.
+- ✅ Web: buyurtmada "Hujjatlar" bloki (PDF ko'rish/yuklab olish, akt "imzolandi", qayta yaratish), Hujjatlar sahifasi (tur/sana filtri) + Shablonlar (OWNER):
+  HTML muharrir, o'zgaruvchilar ro'yxati, namunaviy buyurtma bilan oldindan ko'rish (`sandbox` iframe). Yuqorida qo'ng'iroqcha (30 s polling), bildirishnomalar sahifasi,
+  "hammasini o'qildi". Sozlamalar: rekvizitlar, prefikslar, hujjat tili (OWNER), Telegram ulash (har xodim). uz/en/ru.
+- ✅ Testlar: api 49 (yangi 12), web 29 (yangi 6), shared 54 (summa so'z bilan — 40 ta chegaraviy son). Typecheck, lint, build toza.
+  Playwright 360 px: buyurtma → tasdiq (shartnoma PDF) → avans → BUXGALTER tasdig'i (qo'ng'iroqcha) → yig'ish → jo'natish (OMBORCHI faqat yuk xatini ko'radi)
+  → to'lov → akt imzolandi → yakunlandi; 3 tilda 6 sahifada gorizontal toshish yo'q (sarlavha toshishi topilib tuzatildi).
+
+### Qabul qilingan qarorlar (xavfsiz standart; SAVOL'larga javob kelsa o'zgartiriladi)
+- PDF kutubxonasi — pdfmake (HTML → pdfmake konverter o'zimizniki). Murakkab CSS qo'llanmaydi; shablon shu cheklangan HTML'da yoziladi.
+- Hujjat tili — korxona sozlamasi (`docLocale`, standart uz), mijoz bo'yicha emas.
+- Akt jo'natishda avtomatik yaratiladi; skan/foto yuklash yo'q (fayl saqlash joyi 7-bosqichda hal bo'ladi). Imzolangan hujjatni qayta yaratib bo'lmaydi.
+- OMBORCHI faqat yuk xatini ko'radi (shartnoma/faktura/akt — yo'q). Yangi rollar (TEXNIK/TAMINOT/KURER) qo'shilmadi — SAVOL javobsiz, 5-bosqich.
+- Bekor buyurtmada hujjatlar BEKOR bo'ladi, avans qaytarish (refund) hujjati yo'q — oldingi SAVOL javobsiz.
+- Avans/to'lov xabarlari faqat BUXGALTER'ga (OWNER'ga emas). Raqamlash yili — Toshkent vaqti, har tur alohida, har yil 0001 dan.
+- Summa so'z bilan: "Bir yuz ...", "Bir ming ..." uslubida; ruscha "сум/сума/сумов".
+- Telegram — long polling (webhook emas); prod'da (7-bosqich) webhook'ga o'tish mumkin. Bot `/start` xabari bitta instansda ishlashi kerak.
+- Standart shablon matnlari o'zimizniki (ERP/1C matni ishlatilmadi), yuridik tekshiruvdan o'tmagan.
+
+### SAVOL
+- SAVOL: Atoyo o'z shartnoma namunasini beradimi? Standart matnni yurist tekshirishi kerakmi?
+- SAVOL: Hujjat tili mijozga qarab tanlanishi kerakmi (masalan, rus tilidagi yuridik mijozlar)?
+- SAVOL: Imzolangan akt skanini/fotosini yuklash shartmi?
+- SAVOL: BUXGALTER bo'lmagan korxonada avans/to'lov xabarlari OWNER'ga borsinmi?
+- SAVOL: Telegram botni kim yaratadi (@BotFather → token va nom `.env` ga)? Bitta bot hamma korxonaga umumiymi?
+- SAVOL: Hisob-faktura — oddiy hujjat (my.soliq e-faktura emas, spec'da MVP'dan tashqari). To'g'rimi?
+- Oldingi SAVOL'lar (pastda) hali javobsiz.
+
+### Keyingi
+- 5-bosqich — ERP'dan qo'shiladiganlar (`YIGISH` turi, `PurchaseRequest`, ta'minotchi qarzi, yangi rollar). Prompt yozilishi kerak; avval ERP repo ✱ qatorlari.
+
 ## 2026-11-04 — Yangi reja (ERP g'oyalari + 1C o'rnini bosish)
 Tahlil: `docs/erp-farq.md` (ERP funksiyalari jadvali + 1C'dan ko'chirish rejasi). Mijoz Atoyo 1C'dan to'liq chiqadi.
 ⚠️ `Abdullohkhan/erp` repo'si bu sessiyaga ulanmadi — jadval topshiriqdagi funksiyalar ro'yxatidan tuzildi, ✱ qatorlar ERP kodi bilan tekshiriladi.
 
 ### Qolgan bosqichlar
-- **4 — Hujjat va xabar** (`docs/prompts/4-hujjat-xabar.md`): shartnoma/hisob-faktura/yuk xati/akt — HTML shablon → PDF, OWNER shablonni tahrirlaydi, hujjat raqamlash.
+- ✅ **4 — Hujjat va xabar** (`docs/prompts/4-hujjat-xabar.md`) — 2026-11-05 bajarildi: shartnoma/hisob-faktura/yuk xati/akt — HTML shablon → PDF, OWNER shablonni tahrirlaydi, hujjat raqamlash.
   `Notification` (ilova ichida) + Telegram bot, nasiya eslatmalari; TASDIQLANGAN → AVANS_KUTILMOQDA shartnoma bilan, YAKUNLANDI akt bilan.
 - **5 — ERP'dan qo'shiladiganlar**: buyurtma turi `YIGISH` (komplekt zaxirasi, TEXNIK yig'adi, seriya raqami, sinov, akt, yetkazish),
   `PurchaseRequest` (ta'minot), kirim xarajat turlari (bojxona/deklarant), ta'minotchi to'lovi va qarzi, rollar TEXNIK/TAMINOT/KURER + ruxsatlar. Avval ERP kodi bilan ✱ qatorlarni solishtirish.
