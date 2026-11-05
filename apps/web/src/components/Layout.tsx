@@ -47,8 +47,8 @@ export function Layout() {
 
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-10 flex items-center gap-2 border-b bg-background/95 px-4 py-2 backdrop-blur">
-          <span className="whitespace-nowrap font-semibold md:hidden">{t('app.name')}</span>
-          <div className="ml-auto flex items-center gap-2">
+          <span className="min-w-0 truncate font-semibold md:hidden">{t('app.name')}</span>
+          <div className="ml-auto flex shrink-0 items-center gap-1.5">
             <NotificationBell />
             <ThemeSwitcher className="h-9 w-auto px-2 text-sm" />
             <LanguageSwitcher className="h-9 w-auto px-2 text-sm" />

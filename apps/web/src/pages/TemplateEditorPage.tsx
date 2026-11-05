@@ -162,6 +162,7 @@ function Editor({ tpl }: { tpl?: DocumentTemplateDto }) {
           <ul className="grid gap-1 text-xs sm:grid-cols-2">
             {TEMPLATE_VARIABLES.map((v) => (
               <li key={v} className="break-words">
+                {v.startsWith('lines.') && <span className="text-muted-foreground">↳ </span>}
                 <code className="rounded bg-muted px-1">
                   {v === 'lines' ? '{{#each lines}}…{{/each}}' : `{{${v.replace('lines.', '')}}}`}
                 </code>{' '}
