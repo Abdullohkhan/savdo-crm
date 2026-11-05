@@ -171,12 +171,9 @@ describe('hujjatlar va bildirishnomalar', () => {
     expect(tpls).toHaveLength(8);
     expect((await http().get('/document-templates').set(as('SOTUVCHI'))).status).toBe(403);
     const sh = tpls.find((t) => t.type === 'SHARTNOMA' && t.locale === 'uz')!;
-    const upd = await http()
-      .patch(`/document-templates/${sh.id}`)
-      .set(as('OWNER'))
-      .send({
-        html: '<h1>YANGI SHARTNOMA {{document.number}}</h1><p>{{customer.name}} — {{totalWords}}</p>',
-      });
+    const upd = await http().patch(`/document-templates/${sh.id}`).set(as('OWNER')).send({
+      html: '<h1>YANGI SHARTNOMA {{document.number}}</h1><p>{{customer.name}} — {{totalWords}}</p>',
+    });
     expect(upd.status).toBe(200);
     expect(upd.body.version).toBe(2);
 
