@@ -107,3 +107,80 @@ export const WAREHOUSE_ROLES: readonly Role[] = [Role.OWNER, Role.OMBORCHI];
 export const COMPLETE_ROLES: readonly Role[] = [Role.OWNER, Role.BUXGALTER, Role.SOTUVCHI];
 /** Buyurtmani bekor qilish (jo'natilgandan keyin — faqat OWNER) */
 export const ORDER_CANCEL_ROLES: readonly Role[] = [Role.OWNER, Role.BUXGALTER, Role.SOTUVCHI];
+
+// ---------- 4-bosqich: hujjat va xabar ----------
+
+export const DocumentType = {
+  SHARTNOMA: 'SHARTNOMA',
+  HISOB_FAKTURA: 'HISOB_FAKTURA',
+  YUK_XATI: 'YUK_XATI',
+  AKT: 'AKT',
+} as const;
+export type DocumentType = (typeof DocumentType)[keyof typeof DocumentType];
+export const DOCUMENT_TYPES = Object.values(DocumentType) as [DocumentType, ...DocumentType[]];
+
+export const DocumentStatus = {
+  YARATILDI: 'YARATILDI',
+  IMZOLANDI: 'IMZOLANDI',
+  BEKOR: 'BEKOR',
+} as const;
+export type DocumentStatus = (typeof DocumentStatus)[keyof typeof DocumentStatus];
+export const DOCUMENT_STATUSES = Object.values(DocumentStatus) as [
+  DocumentStatus,
+  ...DocumentStatus[],
+];
+
+/** Hujjat shabloni tillari (en yo'q — hujjatlar faqat o'zbek va rus tilida) */
+export const DocLocale = { uz: 'uz', ru: 'ru' } as const;
+export type DocLocale = (typeof DocLocale)[keyof typeof DocLocale];
+export const DOC_LOCALES = Object.values(DocLocale) as [DocLocale, ...DocLocale[]];
+
+/** Hujjatlarni ko'rish (OMBORCHI — faqat yuk xati) */
+export const DOCUMENT_VIEW_ROLES: readonly Role[] = [
+  Role.OWNER,
+  Role.BUXGALTER,
+  Role.SOTUVCHI,
+  Role.OMBORCHI,
+];
+/** Hujjatni qayta yaratish va aktni "imzolandi" belgilash */
+export const DOCUMENT_SIGN_ROLES: readonly Role[] = [Role.OWNER, Role.BUXGALTER, Role.SOTUVCHI];
+
+export function canSeeDocumentType(role: Role | undefined, type: DocumentType): boolean {
+  if (role === undefined) return false;
+  if (role === Role.OMBORCHI) return type === DocumentType.YUK_XATI;
+  return DOCUMENT_VIEW_ROLES.includes(role);
+}
+
+export const NotificationType = {
+  /** Buyurtma avans kutmoqda → BUXGALTER */
+  ORDER_AWAITING_ADVANCE: 'ORDER_AWAITING_ADVANCE',
+  /** Yig'ish kerak → OMBORCHI */
+  ORDER_TO_PICK: 'ORDER_TO_PICK',
+  /** Jo'natildi → mas'ul sotuvchi */
+  ORDER_SHIPPED: 'ORDER_SHIPPED',
+  /** Yangi to'lov tasdiq kutmoqda → BUXGALTER */
+  PAYMENT_TO_CONFIRM: 'PAYMENT_TO_CONFIRM',
+  /** To'lov rad etildi → qabul qilgan xodim */
+  PAYMENT_REJECTED: 'PAYMENT_REJECTED',
+  /** Tannarxdan past narx — ruxsat kerak → OWNER */
+  PRICE_APPROVAL: 'PRICE_APPROVAL',
+  /** Nasiya muddatiga 3 kun qoldi → sotuvchi + OWNER */
+  DEBT_DUE_SOON: 'DEBT_DUE_SOON',
+  /** Nasiya muddati o'tdi → sotuvchi + OWNER */
+  DEBT_OVERDUE: 'DEBT_OVERDUE',
+  /** Kam qolgan tovarlar → OMBORCHI + OWNER */
+  LOW_STOCK: 'LOW_STOCK',
+} as const;
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType];
+export const NOTIFICATION_TYPES = Object.values(NotificationType) as [
+  NotificationType,
+  ...NotificationType[],
+];
+
+/** Bildirishnoma havolasi qaysi ob'ektga */
+export const NotificationEntity = {
+  ORDER: 'ORDER',
+  PAYMENT: 'PAYMENT',
+  PRODUCT: 'PRODUCT',
+} as const;
+export type NotificationEntity = (typeof NotificationEntity)[keyof typeof NotificationEntity];

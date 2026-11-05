@@ -1,7 +1,12 @@
 import type {
   CustomerType,
+  DocLocale,
+  DocumentStatus,
+  DocumentType,
   Locale,
   MovementType,
+  NotificationEntity,
+  NotificationType,
   OrderStatus,
   PaymentMethod,
   PaymentStatus,
@@ -18,6 +23,8 @@ export interface UserDto {
   role: Role;
   isActive: boolean;
   locale: Locale;
+  /** Telegram bot ulanganmi */
+  telegramLinked: boolean;
   createdAt: string;
 }
 
@@ -28,6 +35,16 @@ export interface OrganizationDto {
   address: string;
   markupPercent: number;
   advancePercent: number;
+  phone: string;
+  director: string;
+  bankName: string;
+  bankAccount: string;
+  bankMfo: string;
+  docLocale: DocLocale;
+  shartnomaPrefix: string;
+  hisobFakturaPrefix: string;
+  yukXatiPrefix: string;
+  aktPrefix: string;
 }
 
 export interface AuthResponse {
@@ -265,4 +282,61 @@ export interface DashboardDto {
   drafts?: OrderListItemDto[];
   /** Muddati o'tgan yoki 3 kun ichida tugaydigan nasiyalar */
   debtsDue?: DebtDto[];
+}
+
+// ---------- 4-bosqich: hujjat va xabar ----------
+
+export interface DocumentDto {
+  id: string;
+  type: DocumentType;
+  /** Masalan SH-2026-0001 */
+  number: string;
+  status: DocumentStatus;
+  locale: DocLocale;
+  orderId: string;
+  orderNumber: number;
+  customerName: string;
+  templateVersion: number;
+  createdByName: string;
+  createdAt: string;
+  signedAt: string | null;
+  signedByName: string | null;
+}
+
+export interface DocumentTemplateDto {
+  id: string;
+  type: DocumentType;
+  locale: DocLocale;
+  name: string;
+  html: string;
+  isDefault: boolean;
+  version: number;
+  updatedAt: string;
+}
+
+export interface TemplatePreviewDto {
+  html: string;
+}
+
+export interface NotificationDto {
+  id: string;
+  type: NotificationType;
+  /** i18n parametrlari: `notifications.<type>` matniga */
+  params: Record<string, string | number>;
+  entity: NotificationEntity | null;
+  entityId: string | null;
+  readAt: string | null;
+  createdAt: string;
+}
+
+export interface UnreadCountDto {
+  count: number;
+}
+
+export interface TelegramLinkDto {
+  code: string;
+  expiresAt: string;
+  /** Bot sozlanmagan bo'lsa — null */
+  botUsername: string | null;
+  deepLink: string | null;
 }

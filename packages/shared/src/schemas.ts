@@ -1,6 +1,14 @@
 import { z } from 'zod';
 import { isValidQuantity } from './costing.js';
-import { CUSTOMER_TYPES, LOCALES, PAYMENT_METHODS, ROLES, UNITS } from './enums.js';
+import {
+  CUSTOMER_TYPES,
+  DOC_LOCALES,
+  DOCUMENT_TYPES,
+  LOCALES,
+  PAYMENT_METHODS,
+  ROLES,
+  UNITS,
+} from './enums.js';
 
 /**
  * Xato xabarlari i18n kalitlari ko'rinishida (masalan `validation.required`) —
@@ -55,6 +63,13 @@ export type UpdateMeInput = z.infer<typeof updateMeSchema>;
 
 const percentSchema = z.number().int().min(0).max(1000);
 
+/** Hujjat raqami prefiksi: SH → SH-2026-0001 */
+const docPrefixSchema = z
+  .string()
+  .trim()
+  .toUpperCase()
+  .regex(/^[A-Z0-9]{1,10}$/, { message: 'validation.docPrefix' });
+
 export const organizationSettingsSchema = z
   .object({
     name: nameSchema,
@@ -65,6 +80,22 @@ export const organizationSettingsSchema = z
     address: z.string().trim().max(300),
     markupPercent: percentSchema,
     advancePercent: z.number().int().min(0).max(100),
+    phone: z.string().trim().max(50),
+    director: z.string().trim().max(100),
+    bankName: z.string().trim().max(150),
+    bankAccount: z
+      .string()
+      .trim()
+      .regex(/^(\d{20})?$/, { message: 'validation.bankAccount' }),
+    bankMfo: z
+      .string()
+      .trim()
+      .regex(/^(\d{5})?$/, { message: 'validation.bankMfo' }),
+    docLocale: z.enum(DOC_LOCALES),
+    shartnomaPrefix: docPrefixSchema,
+    hisobFakturaPrefix: docPrefixSchema,
+    yukXatiPrefix: docPrefixSchema,
+    aktPrefix: docPrefixSchema,
   })
   .partial();
 export type OrganizationSettingsInput = z.infer<typeof organizationSettingsSchema>;
@@ -255,3 +286,37 @@ export const paymentCreateSchema = z.object({
   note: optionalText(300).optional(),
 });
 export type PaymentCreateInput = z.infer<typeof paymentCreateSchema>;
+
+// ---------- 4-bosqich: hujjat va xabar ----------
+
+const templateHtmlSchema = z
+  .string()
+  .min(1, { message: 'validation.required' })
+  .max(200_000, { message: 'validation.tooLarge' });
+
+export const templateCreateSchema = z.object({
+  type: z.enum(DOCUMENT_TYPES),
+  locale: z.enum(DOC_LOCALES),
+  name: nameSchema,
+  html: templateHtmlSchema,
+  isDefault: z.boolean().optional(),
+});
+export type TemplateCreateInput = z.infer<typeof templateCreateSchema>;
+
+export const templateUpdateSchema = z
+  .object({ name: nameSchema, html: templateHtmlSchema, isDefault: z.boolean() })
+  .partial();
+export type TemplateUpdateInput = z.infer<typeof templateUpdateSchema>;
+
+/** Shablonni oldindan ko'rish: buyurtma berilmasa — namunaviy ma'lumot */
+export const templatePreviewSchema = z.object({
+  type: z.enum(DOCUMENT_TYPES),
+  locale: z.enum(DOC_LOCALES),
+  html: templateHtmlSchema,
+  orderId: uuid.optional(),
+});
+export type TemplatePreviewInput = z.infer<typeof templatePreviewSchema>;
+
+/** Hujjatni (qayta) yaratish — eskisi BEKOR bo'ladi */
+export const documentCreateSchema = z.object({ type: z.enum(DOCUMENT_TYPES) });
+export type DocumentCreateInput = z.infer<typeof documentCreateSchema>;
