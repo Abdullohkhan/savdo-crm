@@ -1,11 +1,14 @@
 import { type DynamicModule, Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AuthModule } from './auth/auth.module.js';
 import { CatalogModule } from './catalog/catalog.module.js';
+import { DocumentsModule } from './documents/documents.module.js';
 import { JwtAuthGuard } from './common/jwt-auth.guard.js';
 import { RolesGuard } from './common/roles.guard.js';
 import { APP_CONFIG, type AppConfig } from './config.js';
+import { NotificationsModule } from './notifications/notifications.module.js';
 import { OrganizationModule } from './organization/organization.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { PurchasesModule } from './purchases/purchases.module.js';
@@ -38,6 +41,9 @@ export class AppModule {
         CatalogModule,
         PurchasesModule,
         SalesModule,
+        DocumentsModule,
+        NotificationsModule,
+        ...(config.schedulerEnabled ? [ScheduleModule.forRoot()] : []),
       ],
       providers: [
         // Tartib muhim: avval autentifikatsiya, keyin rol

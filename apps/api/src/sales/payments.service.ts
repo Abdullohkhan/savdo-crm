@@ -10,6 +10,8 @@ import {
 import type { AuthUser } from '../common/auth-user.js';
 import { audit, lockRow, money } from '../common/db.js';
 import type { Prisma } from '../generated/prisma/client.js';
+import { fmtMoney } from '../documents/render.js';
+import { NotificationsService } from '../notifications/notifications.service.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { OrdersService, orderTotal } from './orders.service.js';
 import { paymentInclude, toPaymentDto } from './payments.mapper.js';
@@ -24,6 +26,7 @@ export class PaymentsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly orders: OrdersService,
+    private readonly notifications: NotificationsService,
   ) {}
 
   async list(
@@ -87,8 +90,21 @@ export class PaymentsService {
         amount: input.amount,
         method: input.method,
       });
+      await this.notifications.notifyRoles(
+        tx,
+        actor.organizationId,
+        [Role.BUXGALTER],
+        {
+          type: 'PAYMENT_TO_CONFIRM',
+          params: { orderNumber: o.number, amount: fmtMoney(input.amount) },
+          entity: 'PAYMENT',
+          entityId: p.id,
+        },
+        actor.id,
+      );
       return p.id;
     });
+    this.notifications.kick();
     return this.getOne(actor, id);
   }
 
@@ -128,13 +144,14 @@ export class PaymentsService {
         });
       }
     });
+    this.notifications.kick();
     return this.getOne(actor, id);
   }
 
   async reject(actor: AuthUser, id: string, input: CancelInput): Promise<PaymentDto> {
     await this.prisma.$transaction(async (tx) => {
       const pay = await this.findPending(actor, id);
-      await this.orders.lockAndLoad(tx, actor, pay.orderId);
+      const o = await this.orders.lockAndLoad(tx, actor, pay.orderId);
       await lockRow(tx, 'Payment', id);
       const fresh = await tx.payment.findUniqueOrThrow({ where: { id } });
       if (fresh.status !== 'KUTILMOQDA') throw new BadRequestException('payments.notPending');
@@ -152,7 +169,20 @@ export class PaymentsService {
         to: 'RAD_ETILGAN',
         reason: input.reason,
       });
+      if (fresh.receivedById !== actor.id) {
+        await this.notifications.notifyUsers(tx, actor.organizationId, [fresh.receivedById], {
+          type: 'PAYMENT_REJECTED',
+          params: {
+            orderNumber: o.number,
+            amount: fmtMoney(fresh.amount),
+            reason: input.reason,
+          },
+          entity: 'ORDER',
+          entityId: o.id,
+        });
+      }
     });
+    this.notifications.kick();
     return this.getOne(actor, id);
   }
 

@@ -21,6 +21,16 @@ function toDto(o: Organization): OrganizationDto {
     address: o.address,
     markupPercent: o.markupPercent,
     advancePercent: o.advancePercent,
+    phone: o.phone,
+    director: o.director,
+    bankName: o.bankName,
+    bankAccount: o.bankAccount,
+    bankMfo: o.bankMfo,
+    docLocale: o.docLocale,
+    shartnomaPrefix: o.shartnomaPrefix,
+    hisobFakturaPrefix: o.hisobFakturaPrefix,
+    yukXatiPrefix: o.yukXatiPrefix,
+    aktPrefix: o.aktPrefix,
   };
 }
 

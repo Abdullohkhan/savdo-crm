@@ -10,6 +10,7 @@ export function toUserDto(u: User): UserDto {
     role: u.role,
     isActive: u.isActive,
     locale: u.locale,
+    telegramLinked: !!u.telegramChatId,
     createdAt: u.createdAt.toISOString(),
   };
 }

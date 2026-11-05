@@ -23,51 +23,76 @@ enum Locale {
 }
 
 model Organization {
-  id             String          @id @default(uuid())
-  name           String
-  inn            String          @default("")
-  address        String          @default("")
+  id                 String             @id @default(uuid())
+  name               String
+  inn                String             @default("")
+  address            String             @default("")
   /// Standart ustama, butun foiz
-  markupPercent  Int             @default(10)
+  markupPercent      Int                @default(10)
   /// Standart avans, butun foiz
-  advancePercent Int             @default(30)
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  users          User[]
-  warehouses     Warehouse[]
-  categories     Category[]
-  products       Product[]
-  suppliers      Supplier[]
-  purchases      Purchase[]
-  movements      StockMovement[]
-  auditLogs      AuditLog[]
-  customers      Customer[]
-  orders         SalesOrder[]
-  payments       Payment[]
-  debts          Debt[]
+  advancePercent     Int                @default(30)
+  phone              String             @default("")
+  /// Rahbar (hujjatlarda imzo uchun)
+  director           String             @default("")
+  bankName           String             @default("")
+  /// Hisob raqami, 20 raqam
+  bankAccount        String             @default("")
+  bankMfo            String             @default("")
+  /// Hujjatlar tili
+  docLocale          DocLocale          @default(uz)
+  shartnomaPrefix    String             @default("SH")
+  hisobFakturaPrefix String             @default("HF")
+  yukXatiPrefix      String             @default("YX")
+  aktPrefix          String             @default("AKT")
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  users              User[]
+  warehouses         Warehouse[]
+  categories         Category[]
+  products           Product[]
+  suppliers          Supplier[]
+  purchases          Purchase[]
+  movements          StockMovement[]
+  auditLogs          AuditLog[]
+  customers          Customer[]
+  orders             SalesOrder[]
+  payments           Payment[]
+  debts              Debt[]
+  templates          DocumentTemplate[]
+  documents          Document[]
+  docCounters        DocumentCounter[]
+  notifications      Notification[]
 }
 
 model User {
-  id              String           @id @default(uuid())
-  organizationId  String
-  organization    Organization     @relation(fields: [organizationId], references: [id])
-  name            String
-  phone           String
-  passwordHash    String
-  role            Role
-  isActive        Boolean          @default(true)
-  locale          Locale           @default(uz)
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  refreshTokens   RefreshToken[]
-  purchases       Purchase[]
-  movements       StockMovement[]
-  auditLogs       AuditLog[]
-  ordersSold      SalesOrder[]     @relation("OrderSeller")
-  ordersApproved  SalesOrder[]     @relation("OrderPriceApprover")
-  statusLogs      OrderStatusLog[]
-  paymentsTaken   Payment[]        @relation("PaymentReceiver")
-  paymentsChecked Payment[]        @relation("PaymentConfirmer")
+  id                    String           @id @default(uuid())
+  organizationId        String
+  organization          Organization     @relation(fields: [organizationId], references: [id])
+  name                  String
+  phone                 String
+  passwordHash          String
+  role                  Role
+  isActive              Boolean          @default(true)
+  locale                Locale           @default(uz)
+  /// Telegram chat id (bog'langan bo'lsa)
+  telegramChatId        String?
+  /// Bir martalik bog'lash kodi: sha256(kod)
+  telegramLinkHash      String?          @unique
+  telegramLinkExpiresAt DateTime?
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+  refreshTokens         RefreshToken[]
+  purchases             Purchase[]
+  movements             StockMovement[]
+  auditLogs             AuditLog[]
+  ordersSold            SalesOrder[]     @relation("OrderSeller")
+  ordersApproved        SalesOrder[]     @relation("OrderPriceApprover")
+  statusLogs            OrderStatusLog[]
+  paymentsTaken         Payment[]        @relation("PaymentReceiver")
+  paymentsChecked       Payment[]        @relation("PaymentConfirmer")
+  docsCreated           Document[]       @relation("DocumentCreator")
+  docsSigned            Document[]       @relation("DocumentSigner")
+  notifications         Notification[]
 
   @@unique([organizationId, phone])
   @@index([phone])
@@ -353,6 +378,7 @@ model SalesOrder {
   payments          Payment[]
   debt              Debt?
   movements         StockMovement[]
+  documents         Document[]
 
   @@unique([organizationId, number])
   @@index([organizationId, status])
@@ -430,4 +456,124 @@ model Debt {
 
   @@index([organizationId, closedAt, dueDate])
   @@index([customerId])
+}
+
+// ---------- 4-bosqich: hujjat va xabar ----------
+
+enum DocLocale {
+  uz
+  ru
+}
+
+enum DocumentType {
+  SHARTNOMA
+  HISOB_FAKTURA
+  YUK_XATI
+  AKT
+}
+
+enum DocumentStatus {
+  YARATILDI
+  IMZOLANDI
+  BEKOR
+}
+
+enum NotificationType {
+  ORDER_AWAITING_ADVANCE
+  ORDER_TO_PICK
+  ORDER_SHIPPED
+  PAYMENT_TO_CONFIRM
+  PAYMENT_REJECTED
+  PRICE_APPROVAL
+  DEBT_DUE_SOON
+  DEBT_OVERDUE
+  LOW_STOCK
+}
+
+enum NotificationEntity {
+  ORDER
+  PAYMENT
+  PRODUCT
+}
+
+model DocumentTemplate {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  type           DocumentType
+  locale         DocLocale
+  name           String
+  /// Handlebars HTML
+  html           String
+  isDefault      Boolean      @default(false)
+  /// Har tahrirda +1
+  version        Int          @default(1)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  documents      Document[]
+
+  @@index([organizationId, type, locale])
+}
+
+/// Hujjat raqamlari: korxona + tur + yil bo'yicha tartib
+model DocumentCounter {
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  type           DocumentType
+  year           Int
+  last           Int          @default(0)
+
+  @@id([organizationId, type, year])
+}
+
+model Document {
+  id              String           @id @default(uuid())
+  organizationId  String
+  organization    Organization     @relation(fields: [organizationId], references: [id])
+  type            DocumentType
+  /// Masalan SH-2026-0001
+  number          String
+  orderId         String
+  order           SalesOrder       @relation(fields: [orderId], references: [id])
+  locale          DocLocale
+  templateId      String
+  template        DocumentTemplate @relation(fields: [templateId], references: [id])
+  templateVersion Int
+  /// Tayyor HTML nusxasi — shablon o'zgarsa ham hujjat o'zgarmaydi
+  html            String
+  status          DocumentStatus   @default(YARATILDI)
+  createdById     String
+  createdBy       User             @relation("DocumentCreator", fields: [createdById], references: [id])
+  signedAt        DateTime?
+  signedById      String?
+  signedBy        User?            @relation("DocumentSigner", fields: [signedById], references: [id])
+  cancelledAt     DateTime?
+  createdAt       DateTime         @default(now())
+
+  @@unique([organizationId, number])
+  @@index([organizationId, type, createdAt])
+  @@index([orderId])
+}
+
+model Notification {
+  id             String              @id @default(uuid())
+  organizationId String
+  organization   Organization        @relation(fields: [organizationId], references: [id])
+  userId         String
+  user           User                @relation(fields: [userId], references: [id])
+  type           NotificationType
+  /// i18n parametrlari
+  params         Json                @default("{}")
+  entity         NotificationEntity?
+  entityId       String?
+  /// Takror yubormaslik kaliti (masalan `debt-soon:<id>:2026-11-04`)
+  dedupeKey      String?
+  readAt         DateTime?
+  telegramSentAt DateTime?
+  telegramTries  Int                 @default(0)
+  createdAt      DateTime            @default(now())
+
+  @@unique([userId, dedupeKey])
+  @@index([userId, readAt, createdAt])
+  @@index([telegramSentAt, createdAt])
 }

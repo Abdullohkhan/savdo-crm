@@ -68,6 +68,16 @@ describe('savdo: buyurtma, to`lov, nasiya', () => {
     }
   }
 
+  /** Jo'natishda yaratilgan aktni "imzolandi" belgilash (YAKUNLANDI sharti) */
+  async function signAct(orderId: string) {
+    const docs = (await http().get(`/orders/${orderId}/documents`).set(as('SOTUVCHI'))).body;
+    const act = docs.find(
+      (d: { type: string; status: string }) => d.type === 'AKT' && d.status === 'YARATILDI',
+    );
+    expect(act).toBeTruthy();
+    expect((await http().post(`/documents/${act.id}/sign`).set(as('SOTUVCHI'))).status).toBe(201);
+  }
+
   const getOrder = async (id: string, role = 'OWNER') =>
     (await http().get(`/orders/${id}`).set(as(role))).body;
 
@@ -155,6 +165,7 @@ describe('savdo: buyurtma, to`lov, nasiya', () => {
     expect(seller.lines[0]).not.toHaveProperty('unitCost');
 
     // Qolgan to'lov va yakunlash
+    await signAct(o.id);
     const p3 = await pay(o.id, 300_000);
     // Tasdiqlanmagan to'lov bor — yakunlab bo'lmaydi
     expect(
@@ -264,6 +275,7 @@ describe('savdo: buyurtma, to`lov, nasiya', () => {
     await http().post(`/orders/${o.id}/confirm`).set(as('SOTUVCHI'));
     await pickAll(o);
     await http().post(`/orders/${o.id}/ship`).set(as('OMBORCHI'));
+    await signAct(o.id);
 
     expect((await pay(o.id, 3301)).status).toBe(400);
     const p1 = await pay(o.id, 1000);
@@ -316,6 +328,7 @@ describe('savdo: buyurtma, to`lov, nasiya', () => {
     await http().post(`/orders/${o.id}/confirm`).set(as('SOTUVCHI'));
     await pickAll(o);
     await http().post(`/orders/${o.id}/ship`).set(as('OMBORCHI'));
+    await signAct(o.id);
     const past = await http()
       .post(`/orders/${o.id}/complete`)
       .set(as('SOTUVCHI'))

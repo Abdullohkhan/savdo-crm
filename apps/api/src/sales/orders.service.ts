@@ -35,12 +35,16 @@ import {
   type Tx,
 } from '../common/db.js';
 import { PricingService } from '../catalog/pricing.service.js';
+import { DocumentsService } from '../documents/documents.service.js';
+import { fmtMoney } from '../documents/render.js';
+import { NotificationsService } from '../notifications/notifications.service.js';
 import type { Prisma } from '../generated/prisma/client.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { PurchasesService } from '../purchases/purchases.service.js';
 import { lineValue, weightedAverageIn } from '../stock/costing.js';
 import { StockService } from '../stock/stock.service.js';
 import { toDebtDto } from './debts.js';
+import { visibleOrdersWhere, WAREHOUSE_VISIBLE } from './visibility.js';
 import { paymentInclude, toPaymentDto } from './payments.mapper.js';
 
 export const orderInclude = {
@@ -56,9 +60,6 @@ export const orderInclude = {
 } satisfies Prisma.SalesOrderInclude;
 
 export type OrderFull = Prisma.SalesOrderGetPayload<{ include: typeof orderInclude }>;
-
-/** OMBORCHI ko'radigan holatlar */
-const WAREHOUSE_VISIBLE: OrderStatus[] = ['YIGILMOQDA', 'JONATILDI', 'YAKUNLANDI'];
 
 export function orderTotal(lines: { quantity: Decimal; price: number }[]): bigint {
   return lines.reduce((a, l) => a + lineValue(l.quantity, l.price), 0n);
@@ -147,13 +148,7 @@ export function toOrderDto(o: OrderFull, showCost: boolean): OrderDto {
   };
 }
 
-/** Rolga qarab ko'rinadigan buyurtmalar sharti */
-export function visibleOrdersWhere(actor: AuthUser): Prisma.SalesOrderWhereInput {
-  const where: Prisma.SalesOrderWhereInput = { organizationId: actor.organizationId };
-  if (actor.role === Role.SOTUVCHI) where.sellerId = actor.id;
-  if (actor.role === Role.OMBORCHI) where.status = { in: WAREHOUSE_VISIBLE };
-  return where;
-}
+export { visibleOrdersWhere } from './visibility.js';
 
 @Injectable()
 export class OrdersService {
@@ -162,6 +157,8 @@ export class OrdersService {
     private readonly stock: StockService,
     private readonly pricing: PricingService,
     private readonly purchases: PurchasesService,
+    private readonly documents: DocumentsService,
+    private readonly notifications: NotificationsService,
   ) {}
 
   async list(
@@ -211,6 +208,7 @@ export class OrdersService {
       });
       return o.id;
     });
+    await this.afterDraftSaved(actor, id);
     return this.get(actor, id);
   }
 
@@ -236,6 +234,7 @@ export class OrdersService {
         await tx.salesOrderLine.createMany({ data: lines.map((l) => ({ ...l, orderId: id })) });
       }
     });
+    if (input.lines) await this.afterDraftSaved(actor, id);
     return this.get(actor, id);
   }
 
@@ -268,10 +267,12 @@ export class OrdersService {
       const org = await tx.organization.findUniqueOrThrow({ where: { id: actor.organizationId } });
       await tx.salesOrder.update({ where: { id }, data: { advancePercent: org.advancePercent } });
       await this.transition(tx, actor, o.id, o.status, 'TASDIQLANGAN');
-      // Shartnoma PDF — 4-bosqich; hozircha avtomatik o'tiladi
+      // Shartnoma avtomatik (avans 0% bo'lsa ham)
+      await this.documents.createForOrder(tx, actor, o.id, 'SHARTNOMA');
       const next = org.advancePercent > 0 ? 'AVANS_KUTILMOQDA' : 'YIGILMOQDA';
       await this.transition(tx, actor, o.id, 'TASDIQLANGAN', next);
     });
+    this.notifications.kick();
     return this.get(actor, id);
   }
 
@@ -338,7 +339,12 @@ export class OrdersService {
         });
       }
       await this.transition(tx, actor, o.id, o.status, 'JONATILDI');
+      // Jo'natishda: yuk xati, hisob-faktura va imzolanadigan akt
+      for (const type of ['YUK_XATI', 'HISOB_FAKTURA', 'AKT'] as const) {
+        await this.documents.createForOrder(tx, actor, o.id, type);
+      }
     });
+    this.notifications.kick();
     return this.get(actor, id);
   }
 
@@ -350,6 +356,9 @@ export class OrdersService {
       this.assertStatus(o, ['JONATILDI']);
       if (o.payments.some((p) => p.status === 'KUTILMOQDA')) {
         throw new BadRequestException('orders.paymentsPending');
+      }
+      if (!(await this.documents.isActSigned(tx, o.id))) {
+        throw new BadRequestException('orders.actNotSigned');
       }
       const remaining = orderTotal(o.lines) - sumPayments(o, 'TASDIQLANGAN');
       if (remaining > 0n) {
@@ -441,6 +450,7 @@ export class OrdersService {
         await this.pricing.recompute(tx, actor, ids);
       }
       await tx.salesOrder.update({ where: { id }, data: { cancelReason: input.reason } });
+      await this.documents.cancelForOrder(tx, actor, o.id);
       await this.transition(tx, actor, o.id, o.status, 'BEKOR', input.reason);
     });
     return this.get(actor, id);
@@ -465,6 +475,84 @@ export class OrdersService {
       to,
       ...(reason ? { reason } : {}),
     });
+    await this.notifyStatus(tx, actor, orderId, to);
+  }
+
+  /** Keyingi mas'ul rolga bildirishnoma (spec 3-bo'lim) */
+  private async notifyStatus(tx: Tx, actor: AuthUser, orderId: string, to: OrderStatus) {
+    if (to !== 'AVANS_KUTILMOQDA' && to !== 'YIGILMOQDA' && to !== 'JONATILDI') return;
+    const o = await tx.salesOrder.findUniqueOrThrow({
+      where: { id: orderId },
+      include: {
+        customer: { select: { name: true } },
+        lines: { select: { quantity: true, price: true } },
+      },
+    });
+    const base = {
+      params: { orderNumber: o.number, customerName: o.customer.name },
+      entity: 'ORDER' as const,
+      entityId: o.id,
+    };
+    const org = actor.organizationId;
+    if (to === 'AVANS_KUTILMOQDA') {
+      const advance = advanceRequired(money(orderTotal(o.lines))!, o.advancePercent);
+      await this.notifications.notifyRoles(
+        tx,
+        org,
+        [Role.BUXGALTER],
+        {
+          ...base,
+          type: 'ORDER_AWAITING_ADVANCE',
+          params: { ...base.params, advance: fmtMoney(advance) },
+        },
+        actor.id,
+      );
+    } else if (to === 'YIGILMOQDA') {
+      await this.notifications.notifyRoles(
+        tx,
+        org,
+        [Role.OMBORCHI],
+        { ...base, type: 'ORDER_TO_PICK' },
+        actor.id,
+      );
+    } else if (o.sellerId !== actor.id) {
+      await this.notifications.notifyUsers(tx, org, [o.sellerId], {
+        ...base,
+        type: 'ORDER_SHIPPED',
+      });
+    }
+  }
+
+  /** Tannarxdan past narx — OWNER'ga (o'qilmagan xabar bo'lsa takrorlanmaydi) */
+  private async afterDraftSaved(actor: AuthUser, id: string): Promise<void> {
+    const o = await this.load(this.prisma, actor, id);
+    if (!needsApproval(o)) return;
+    const owners = await this.prisma.user.findMany({
+      where: {
+        organizationId: actor.organizationId,
+        role: Role.OWNER,
+        isActive: true,
+        id: { not: actor.id },
+      },
+      select: { id: true },
+    });
+    const pending = await this.prisma.notification.findMany({
+      where: { type: 'PRICE_APPROVAL', entityId: id, readAt: null },
+      select: { userId: true },
+    });
+    const skip = new Set(pending.map((p) => p.userId));
+    await this.notifications.notifyUsers(
+      this.prisma,
+      actor.organizationId,
+      owners.map((u) => u.id).filter((u) => !skip.has(u)),
+      {
+        type: 'PRICE_APPROVAL',
+        params: { orderNumber: o.number, sellerName: o.seller.name },
+        entity: 'ORDER',
+        entityId: id,
+      },
+    );
+    this.notifications.kick();
   }
 
   private async computeShortages(

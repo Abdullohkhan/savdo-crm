@@ -12,6 +12,13 @@ export interface AppConfig {
   port: number;
   webOrigin: string;
   cookieSecure: boolean;
+  /** Telegram bot (ixtiyoriy) — bo'lmasa faqat ilova ichidagi bildirishnoma */
+  telegramBotToken?: string;
+  telegramBotUsername?: string;
+  /** Bot `/start` buyruqlarini long polling bilan qabul qiladi */
+  telegramPolling?: boolean;
+  /** Kunlik eslatmalar va Telegram outbox (testlarda o'chiq) */
+  schedulerEnabled?: boolean;
 }
 
 export function loadConfig(): AppConfig {
@@ -23,6 +30,10 @@ export function loadConfig(): AppConfig {
     port: Number(process.env.PORT ?? 3000),
     webOrigin: process.env.WEB_ORIGIN ?? 'http://localhost:5173',
     cookieSecure: process.env.COOKIE_SECURE === 'true',
+    telegramBotToken: process.env.TELEGRAM_BOT_TOKEN || undefined,
+    telegramBotUsername: process.env.TELEGRAM_BOT_USERNAME || undefined,
+    telegramPolling: process.env.TELEGRAM_POLLING !== 'false',
+    schedulerEnabled: process.env.SCHEDULER_ENABLED !== 'false',
   };
 }
 

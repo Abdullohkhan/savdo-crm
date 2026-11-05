@@ -1,5 +1,7 @@
 import { PrismaPg } from '@prisma/adapter-pg';
 import * as argon2 from 'argon2';
+import { DOC_LOCALES, DOCUMENT_TYPES } from '@savdo/shared';
+import { DEFAULT_TEMPLATES } from '../src/documents/default-templates.js';
 import { PrismaClient } from '../src/generated/prisma/client.js';
 
 try {
@@ -49,5 +51,18 @@ if (!existing) {
   console.log(`Seed: ${ORG_NAME} + OWNER yaratildi`);
 } else {
   console.log(`Seed: ${ORG_NAME} OWNER allaqachon bor`);
+}
+// Hujjat shablonlari: har tur × uz/ru (bor bo'lsa tegilmaydi)
+for (const locale of DOC_LOCALES) {
+  for (const type of DOCUMENT_TYPES) {
+    const has = await prisma.documentTemplate.findFirst({
+      where: { organizationId: org.id, type, locale },
+    });
+    if (has) continue;
+    const t = DEFAULT_TEMPLATES[locale][type];
+    await prisma.documentTemplate.create({
+      data: { organizationId: org.id, type, locale, name: t.name, html: t.html, isDefault: true },
+    });
+  }
 }
 await prisma.$disconnect();

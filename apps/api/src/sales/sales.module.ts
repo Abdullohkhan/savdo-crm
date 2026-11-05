@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CatalogModule } from '../catalog/catalog.module.js';
+import { DocumentsModule } from '../documents/documents.module.js';
+import { NotificationsModule } from '../notifications/notifications.module.js';
 import { PurchasesModule } from '../purchases/purchases.module.js';
 import { StockModule } from '../stock/stock.module.js';
 import { CustomersController } from './customers.controller.js';
@@ -10,7 +12,7 @@ import { PaymentsController } from './payments.controller.js';
 import { PaymentsService } from './payments.service.js';
 
 @Module({
-  imports: [CatalogModule, StockModule, PurchasesModule],
+  imports: [CatalogModule, StockModule, PurchasesModule, DocumentsModule, NotificationsModule],
   controllers: [CustomersController, OrdersController, PaymentsController, DashboardController],
   providers: [OrdersService, PaymentsService],
 })
