@@ -1,7 +1,14 @@
-import { CUSTOMER_ROLES, PAYMENT_RECEIVE_ROLES, PURCHASE_DRAFT_ROLES, Role } from '@savdo/shared';
+import {
+  CUSTOMER_ROLES,
+  DOCUMENT_VIEW_ROLES,
+  PAYMENT_RECEIVE_ROLES,
+  PURCHASE_DRAFT_ROLES,
+  Role,
+} from '@savdo/shared';
 import {
   ClipboardList,
   Contact,
+  FileText,
   Home,
   type LucideIcon,
   Menu,
@@ -27,6 +34,7 @@ export const NAV_ITEMS: NavItem[] = [
   { to: '/products', labelKey: 'nav.products', icon: Package },
   { to: '/purchases', labelKey: 'nav.purchases', icon: Truck, roles: PURCHASE_DRAFT_ROLES },
   { to: '/payments', labelKey: 'nav.payments', icon: Wallet, roles: PAYMENT_RECEIVE_ROLES },
+  { to: '/documents', labelKey: 'nav.documents', icon: FileText, roles: DOCUMENT_VIEW_ROLES },
   { to: '/users', labelKey: 'nav.users', icon: Users, roles: [Role.OWNER] },
   { to: '/settings', labelKey: 'nav.settings', icon: Settings },
 ];

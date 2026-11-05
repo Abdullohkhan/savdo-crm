@@ -15,6 +15,7 @@ export function makeUser(overrides: Partial<UserDto> = {}): UserDto {
     role: 'OWNER',
     isActive: true,
     locale: 'uz',
+    telegramLinked: false,
     createdAt: new Date(0).toISOString(),
     ...overrides,
   };

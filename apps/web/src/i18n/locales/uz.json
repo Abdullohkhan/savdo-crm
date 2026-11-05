@@ -13,7 +13,8 @@
     "orders": "Buyurtmalar",
     "customers": "Mijozlar",
     "payments": "To'lovlar",
-    "menu": "Menyu"
+    "menu": "Menyu",
+    "documents": "Hujjatlar"
   },
   "theme": {
     "label": "Tema",
@@ -86,7 +87,16 @@
     "address": "Manzil",
     "markupPercent": "Ustama, %",
     "advancePercent": "Avans, %",
-    "saved": "Saqlandi"
+    "saved": "Saqlandi",
+    "phone": "Telefon",
+    "director": "Rahbar (F.I.Sh.)",
+    "bank": "Bank rekvizitlari",
+    "bankName": "Bank nomi",
+    "bankAccount": "Hisob raqami (20 raqam)",
+    "bankMfo": "MFO",
+    "documents": "Hujjatlar",
+    "docLocale": "Hujjatlar tili",
+    "prefixHint": "Raqam ko‘rinishi: PREFIKS-YIL-0001 (masalan SH-2026-0001)."
   },
   "common": {
     "save": "Saqlash",
@@ -102,7 +112,8 @@
     "inactive": "Faol emas",
     "activate": "Faollashtirish",
     "deactivate": "Faolsizlantirish",
-    "currency": "so'm"
+    "currency": "so'm",
+    "all": "Hammasi"
   },
   "errors": {
     "notFoundTitle": "Sahifa topilmadi",
@@ -124,7 +135,10 @@
     "quantityDecimals": "Ko'pi bilan 3 kasr xona",
     "reasonRequired": "Sababni yozing (kamida 3 belgi)",
     "duplicateProduct": "Bir tovar ikki marta qo'shilgan",
-    "date": "Sana noto'g'ri"
+    "date": "Sana noto'g'ri",
+    "bankAccount": "Hisob raqami 20 ta raqam",
+    "bankMfo": "MFO 5 ta raqam",
+    "docPrefix": "Faqat lotin harfi va raqam, 10 tagacha"
   },
   "units": {
     "dona": "dona",
@@ -324,7 +338,8 @@
     "paymentsPending": "Tasdiqlanmagan to'lovlar bor",
     "priceApprovalRequired": "Tannarxdan past narxga egasining ruxsati kerak",
     "productNotFound": "Tovar topilmadi yoki faol emas",
-    "wrongStatus": "Bu bosqichda bu amalni bajarib bo'lmaydi"
+    "wrongStatus": "Bu bosqichda bu amalni bajarib bo'lmaydi",
+    "actNotSigned": "Akt imzolanmagan — avval aktni “imzolandi” deb belgilang"
   },
   "payments": {
     "title": "To'lovlar",
@@ -340,5 +355,133 @@
     "exceedsDue": "Summa qolgan qarzdan katta",
     "notPending": "To'lov allaqachon ko'rib chiqilgan",
     "nothingDue": "To'lanadigan summa yo'q"
+  },
+  "telegram": {
+    "title": "Telegram",
+    "hint": "Bildirishnomalarni Telegram’da olish uchun botni ulang.",
+    "link": "Telegram’ni ulash",
+    "newCode": "Yangi kod",
+    "code": "Kod",
+    "expires": "Kod 10 daqiqa amal qiladi, bir marta ishlatiladi. Botga yuboring:",
+    "openBot": "{{bot}} ni ochish",
+    "linked": "Telegram ulangan ✓",
+    "unlink": "Uzish"
+  },
+  "documents": {
+    "title": "Hujjatlar",
+    "empty": "Hujjat yo‘q",
+    "view": "PDF ko‘rish",
+    "download": "Yuklab olish",
+    "markSigned": "Imzolandi",
+    "signedBy": "imzoladi: {{name}}",
+    "actHint": "Buyurtmani yakunlash uchun akt imzolangan bo‘lishi kerak.",
+    "cancelledCount": "Bekor qilinganlar: {{count}}",
+    "type": "Turi",
+    "from": "Sanadan",
+    "to": "Sanagacha",
+    "tab": {
+      "documents": "Hujjatlar",
+      "templates": "Shablonlar"
+    },
+    "alreadySigned": "Imzolangan hujjatni qayta yaratib bo‘lmaydi",
+    "wrongStatus": "Hujjat holati bunga ruxsat bermaydi",
+    "status": {
+      "YARATILDI": "Yaratildi",
+      "IMZOLANDI": "Imzolandi",
+      "BEKOR": "Bekor"
+    },
+    "types": {
+      "SHARTNOMA": "Shartnoma",
+      "HISOB_FAKTURA": "Hisob-faktura",
+      "YUK_XATI": "Yuk xati",
+      "AKT": "Akt"
+    },
+    "regenerate": {
+      "SHARTNOMA": "Shartnomani qayta yaratish",
+      "HISOB_FAKTURA": "Hisob-fakturani qayta yaratish",
+      "YUK_XATI": "Yuk xatini qayta yaratish",
+      "AKT": "Aktni qayta yaratish"
+    }
+  },
+  "templates": {
+    "new": "Yangi shablon",
+    "default": "Asosiy",
+    "name": "Nomi",
+    "html": "HTML matn",
+    "htmlHint": "Ruxsat: h1–h3, p, b, i, u, br, hr, table (colspan, width), ul/ol. Tekislash: class=\"right|center\"; ramkasiz jadval: class=\"plain\". Skript taqiqlangan.",
+    "makeDefault": "Asosiy shablon qilish",
+    "preview": "Oldindan ko‘rish",
+    "versionHint": "Saqlansa versiya oshadi. Avval yaratilgan hujjatlar o‘zgarmaydi.",
+    "variables": "O‘zgaruvchilar",
+    "unsafe": "Shablonda taqiqlangan kod bor (skript, on*-atribut, uch qavsli chiqish va h.k.)",
+    "syntax": "Shablon sintaksisida xato",
+    "defaultRequired": "Asosiy shablonni o‘chirib bo‘lmaydi — boshqasini asosiy qiling",
+    "vars": {
+      "org": {
+        "name": "korxona nomi",
+        "inn": "korxona STIR",
+        "address": "korxona manzili",
+        "phone": "korxona telefoni",
+        "director": "rahbar",
+        "bankName": "bank",
+        "bankAccount": "hisob raqami",
+        "bankMfo": "MFO"
+      },
+      "customer": {
+        "name": "mijoz",
+        "inn": "mijoz STIR",
+        "address": "mijoz manzili",
+        "phone": "mijoz telefoni"
+      },
+      "document": {
+        "number": "hujjat raqami",
+        "date": "hujjat sanasi"
+      },
+      "order": {
+        "number": "buyurtma raqami",
+        "date": "buyurtma sanasi"
+      },
+      "seller": {
+        "name": "sotuvchi"
+      },
+      "lines": {
+        "_": "qatorlar jadvali",
+        "n": "tartib №",
+        "name": "tovar nomi",
+        "sku": "artikul",
+        "unit": "birlik",
+        "quantity": "miqdor",
+        "price": "narx",
+        "total": "qator summasi"
+      },
+      "total": "jami summa",
+      "totalWords": "jami so‘z bilan",
+      "advancePercent": "avans %",
+      "advance": "avans summasi",
+      "advanceWords": "avans so‘z bilan",
+      "paid": "to‘langan",
+      "remaining": "qoldiq",
+      "contract": {
+        "number": "shartnoma raqami",
+        "date": "shartnoma sanasi"
+      }
+    }
+  },
+  "notifications": {
+    "title": "Bildirishnomalar",
+    "empty": "Bildirishnoma yo‘q",
+    "readAll": "Hammasini o‘qildi",
+    "bell": "Bildirishnomalar: {{count}} ta o‘qilmagan",
+    "types": {
+      "ORDER_AWAITING_ADVANCE": "Buyurtma #{{orderNumber}} ({{customerName}}) avans kutmoqda: {{advance}} so‘m",
+      "ORDER_TO_PICK": "Buyurtma #{{orderNumber}} ({{customerName}}) yig‘ishga tayyor",
+      "ORDER_SHIPPED": "Buyurtma #{{orderNumber}} ({{customerName}}) jo‘natildi — aktni imzolatib, yakunlang",
+      "PAYMENT_TO_CONFIRM": "Buyurtma #{{orderNumber}}: {{amount}} so‘m to‘lov tasdiq kutmoqda",
+      "PAYMENT_REJECTED": "Buyurtma #{{orderNumber}}: {{amount}} so‘m to‘lov rad etildi — {{reason}}",
+      "PRICE_APPROVAL": "Buyurtma #{{orderNumber}} ({{sellerName}}): tannarxdan past narxga ruxsat kerak",
+      "DEBT_DUE_SOON": "Nasiya muddati yaqin: {{customerName}}, #{{orderNumber}}, {{remaining}} so‘m, {{dueDate}}",
+      "DEBT_OVERDUE": "Nasiya muddati o‘tdi: {{customerName}}, #{{orderNumber}}, {{remaining}} so‘m, {{dueDate}}",
+      "LOW_STOCK": "Kam qolgan tovarlar: {{count}} ta"
+    }
   }
 }

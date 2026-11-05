@@ -12,6 +12,16 @@ import type {
   CustomerUpdateInput,
   DashboardDto,
   DebtDto,
+  DocumentDto,
+  DocumentTemplateDto,
+  DocumentType,
+  NotificationDto,
+  TelegramLinkDto,
+  TemplateCreateInput,
+  TemplatePreviewDto,
+  TemplatePreviewInput,
+  TemplateUpdateInput,
+  UnreadCountDto,
   OrderDraftInput,
   OrderDraftUpdateInput,
   OrderDto,
@@ -119,6 +129,9 @@ export const api = createApi({
     'Order',
     'Payment',
     'Dashboard',
+    'Document',
+    'Template',
+    'Notification',
   ],
   endpoints: (b) => ({
     login: b.mutation<AuthResponse, LoginInput>({
@@ -396,6 +409,97 @@ export const api = createApi({
       query: () => '/dashboard',
       providesTags: ['Dashboard', 'Order', 'Payment'],
     }),
+
+    // ---------- 4-bosqich: hujjat va xabar ----------
+    documents: b.query<DocumentDto[], { type?: DocumentType; from?: string; to?: string } | void>({
+      query: (p) => {
+        const params = new URLSearchParams();
+        if (p?.type) params.set('type', p.type);
+        if (p?.from) params.set('from', p.from);
+        if (p?.to) params.set('to', p.to);
+        const qs = params.toString();
+        return `/documents${qs ? `?${qs}` : ''}`;
+      },
+      providesTags: ['Document'],
+    }),
+    orderDocuments: b.query<DocumentDto[], string>({
+      query: (orderId) => `/orders/${orderId}/documents`,
+      providesTags: ['Document', 'Order'],
+    }),
+    regenerateDocument: b.mutation<DocumentDto, { orderId: string; type: DocumentType }>({
+      query: ({ orderId, type }) => ({
+        url: `/orders/${orderId}/documents`,
+        method: 'POST',
+        body: { type },
+      }),
+      invalidatesTags: ['Document'],
+    }),
+    signDocument: b.mutation<DocumentDto, string>({
+      query: (id) => ({ url: `/documents/${id}/sign`, method: 'POST' }),
+      invalidatesTags: ['Document'],
+    }),
+    /** PDF'ni token bilan yuklab, blob URL qaytaradi */
+    documentPdf: b.mutation<string, string>({
+      query: (id) => ({
+        url: `/documents/${id}/pdf`,
+        responseHandler: async (r) =>
+          r.ok ? URL.createObjectURL(await r.blob()) : ((await r.json()) as unknown),
+      }),
+    }),
+    templates: b.query<DocumentTemplateDto[], void>({
+      query: () => '/document-templates',
+      providesTags: ['Template'],
+    }),
+    template: b.query<DocumentTemplateDto, string>({
+      query: (id) => `/document-templates/${id}`,
+      providesTags: ['Template'],
+    }),
+    createTemplate: b.mutation<DocumentTemplateDto, TemplateCreateInput>({
+      query: (body) => ({ url: '/document-templates', method: 'POST', body }),
+      invalidatesTags: ['Template'],
+    }),
+    updateTemplate: b.mutation<DocumentTemplateDto, { id: string; body: TemplateUpdateInput }>({
+      query: ({ id, body }) => ({ url: `/document-templates/${id}`, method: 'PATCH', body }),
+      invalidatesTags: ['Template'],
+    }),
+    previewTemplate: b.mutation<TemplatePreviewDto, TemplatePreviewInput>({
+      query: (body) => ({ url: '/document-templates/preview', method: 'POST', body }),
+    }),
+    notifications: b.query<NotificationDto[], void>({
+      query: () => '/notifications',
+      providesTags: ['Notification'],
+    }),
+    unreadCount: b.query<UnreadCountDto, void>({
+      query: () => '/notifications/unread-count',
+      providesTags: ['Notification'],
+    }),
+    readNotification: b.mutation<NotificationDto, string>({
+      query: (id) => ({ url: `/notifications/${id}/read`, method: 'POST' }),
+      invalidatesTags: ['Notification'],
+    }),
+    readAllNotifications: b.mutation<UnreadCountDto, void>({
+      query: () => ({ url: '/notifications/read-all', method: 'POST' }),
+      invalidatesTags: ['Notification'],
+    }),
+    me: b.query<UserDto, void>({
+      query: () => '/auth/me',
+      providesTags: ['User'],
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(userUpdated(data));
+        } catch {
+          // e'tiborsiz
+        }
+      },
+    }),
+    telegramLinkCode: b.mutation<TelegramLinkDto, void>({
+      query: () => ({ url: '/telegram/link-code', method: 'POST' }),
+    }),
+    telegramUnlink: b.mutation<{ ok: true }, void>({
+      query: () => ({ url: '/telegram/link', method: 'DELETE' }),
+      invalidatesTags: ['User'],
+    }),
   }),
 });
 
@@ -447,6 +551,23 @@ export const {
   useRejectPaymentMutation,
   useDebtsQuery,
   useDashboardQuery,
+  useDocumentsQuery,
+  useOrderDocumentsQuery,
+  useRegenerateDocumentMutation,
+  useSignDocumentMutation,
+  useDocumentPdfMutation,
+  useTemplatesQuery,
+  useTemplateQuery,
+  useCreateTemplateMutation,
+  useUpdateTemplateMutation,
+  usePreviewTemplateMutation,
+  useNotificationsQuery,
+  useUnreadCountQuery,
+  useReadNotificationMutation,
+  useReadAllNotificationsMutation,
+  useMeQuery,
+  useTelegramLinkCodeMutation,
+  useTelegramUnlinkMutation,
 } = api;
 
 /** API xatosidan i18n kalitini oladi */

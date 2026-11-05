@@ -13,7 +13,8 @@
     "orders": "Orders",
     "customers": "Customers",
     "payments": "Payments",
-    "menu": "Menu"
+    "menu": "Menu",
+    "documents": "Documents"
   },
   "theme": {
     "label": "Theme",
@@ -86,7 +87,16 @@
     "address": "Address",
     "markupPercent": "Markup, %",
     "advancePercent": "Advance, %",
-    "saved": "Saved"
+    "saved": "Saved",
+    "phone": "Phone",
+    "director": "Director (full name)",
+    "bank": "Bank details",
+    "bankName": "Bank name",
+    "bankAccount": "Account number (20 digits)",
+    "bankMfo": "MFO (bank code)",
+    "documents": "Documents",
+    "docLocale": "Document language",
+    "prefixHint": "Number format: PREFIX-YEAR-0001 (e.g. SH-2026-0001)."
   },
   "common": {
     "save": "Save",
@@ -102,7 +112,8 @@
     "inactive": "Inactive",
     "activate": "Activate",
     "deactivate": "Deactivate",
-    "currency": "UZS"
+    "currency": "UZS",
+    "all": "All"
   },
   "errors": {
     "notFoundTitle": "Page not found",
@@ -124,7 +135,10 @@
     "quantityDecimals": "At most 3 decimal places",
     "reasonRequired": "Enter a reason (min. 3 characters)",
     "duplicateProduct": "The same product is added twice",
-    "date": "Invalid date"
+    "date": "Invalid date",
+    "bankAccount": "Account number must be 20 digits",
+    "bankMfo": "MFO must be 5 digits",
+    "docPrefix": "Latin letters and digits only, up to 10"
   },
   "units": {
     "dona": "pcs",
@@ -324,7 +338,8 @@
     "paymentsPending": "There are unconfirmed payments",
     "priceApprovalRequired": "Owner approval needed for prices below cost",
     "productNotFound": "Product not found or inactive",
-    "wrongStatus": "This action is not allowed at this stage"
+    "wrongStatus": "This action is not allowed at this stage",
+    "actNotSigned": "The act is not signed — mark it as signed first"
   },
   "payments": {
     "title": "Payments",
@@ -340,5 +355,133 @@
     "exceedsDue": "Amount exceeds what is due",
     "notPending": "Payment was already processed",
     "nothingDue": "Nothing is due"
+  },
+  "telegram": {
+    "title": "Telegram",
+    "hint": "Link the bot to receive notifications in Telegram.",
+    "link": "Link Telegram",
+    "newCode": "New code",
+    "code": "Code",
+    "expires": "The code is valid for 10 minutes and works once. Send to the bot:",
+    "openBot": "Open {{bot}}",
+    "linked": "Telegram linked ✓",
+    "unlink": "Unlink"
+  },
+  "documents": {
+    "title": "Documents",
+    "empty": "No documents",
+    "view": "View PDF",
+    "download": "Download",
+    "markSigned": "Signed",
+    "signedBy": "signed by {{name}}",
+    "actHint": "The act must be signed to complete the order.",
+    "cancelledCount": "Cancelled: {{count}}",
+    "type": "Type",
+    "from": "From",
+    "to": "To",
+    "tab": {
+      "documents": "Documents",
+      "templates": "Templates"
+    },
+    "alreadySigned": "A signed document cannot be regenerated",
+    "wrongStatus": "Document status does not allow this",
+    "status": {
+      "YARATILDI": "Created",
+      "IMZOLANDI": "Signed",
+      "BEKOR": "Cancelled"
+    },
+    "types": {
+      "SHARTNOMA": "Contract",
+      "HISOB_FAKTURA": "Invoice",
+      "YUK_XATI": "Waybill",
+      "AKT": "Act"
+    },
+    "regenerate": {
+      "SHARTNOMA": "Regenerate contract",
+      "HISOB_FAKTURA": "Regenerate invoice",
+      "YUK_XATI": "Regenerate waybill",
+      "AKT": "Regenerate act"
+    }
+  },
+  "templates": {
+    "new": "New template",
+    "default": "Default",
+    "name": "Name",
+    "html": "HTML",
+    "htmlHint": "Allowed: h1–h3, p, b, i, u, br, hr, table (colspan, width), ul/ol. Align: class=\"right|center\"; borderless table: class=\"plain\". Scripts are forbidden.",
+    "makeDefault": "Make default",
+    "preview": "Preview",
+    "versionHint": "Saving increases the version. Existing documents do not change.",
+    "variables": "Variables",
+    "unsafe": "The template contains forbidden code (script, on* attributes, triple-brace output etc.)",
+    "syntax": "Template syntax error",
+    "defaultRequired": "Cannot unset the default template — make another one default",
+    "vars": {
+      "org": {
+        "name": "company name",
+        "inn": "company TIN",
+        "address": "company address",
+        "phone": "company phone",
+        "director": "director",
+        "bankName": "bank",
+        "bankAccount": "account number",
+        "bankMfo": "MFO"
+      },
+      "customer": {
+        "name": "customer",
+        "inn": "customer TIN",
+        "address": "customer address",
+        "phone": "customer phone"
+      },
+      "document": {
+        "number": "document number",
+        "date": "document date"
+      },
+      "order": {
+        "number": "order number",
+        "date": "order date"
+      },
+      "seller": {
+        "name": "seller"
+      },
+      "lines": {
+        "_": "lines table",
+        "n": "row №",
+        "name": "product name",
+        "sku": "SKU",
+        "unit": "unit",
+        "quantity": "quantity",
+        "price": "price",
+        "total": "line total"
+      },
+      "total": "total",
+      "totalWords": "total in words",
+      "advancePercent": "advance %",
+      "advance": "advance amount",
+      "advanceWords": "advance in words",
+      "paid": "paid",
+      "remaining": "remaining",
+      "contract": {
+        "number": "contract number",
+        "date": "contract date"
+      }
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "No notifications",
+    "readAll": "Mark all read",
+    "bell": "Notifications: {{count}} unread",
+    "types": {
+      "ORDER_AWAITING_ADVANCE": "Order #{{orderNumber}} ({{customerName}}) awaits advance: {{advance}} UZS",
+      "ORDER_TO_PICK": "Order #{{orderNumber}} ({{customerName}}) is ready for picking",
+      "ORDER_SHIPPED": "Order #{{orderNumber}} ({{customerName}}) shipped — get the act signed and complete it",
+      "PAYMENT_TO_CONFIRM": "Order #{{orderNumber}}: payment of {{amount}} UZS awaits confirmation",
+      "PAYMENT_REJECTED": "Order #{{orderNumber}}: payment of {{amount}} UZS rejected — {{reason}}",
+      "PRICE_APPROVAL": "Order #{{orderNumber}} ({{sellerName}}): below-cost price needs approval",
+      "DEBT_DUE_SOON": "Credit due soon: {{customerName}}, #{{orderNumber}}, {{remaining}} UZS, {{dueDate}}",
+      "DEBT_OVERDUE": "Credit overdue: {{customerName}}, #{{orderNumber}}, {{remaining}} UZS, {{dueDate}}",
+      "LOW_STOCK": "Low stock products: {{count}}"
+    }
   }
 }

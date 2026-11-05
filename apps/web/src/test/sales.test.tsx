@@ -72,13 +72,13 @@ describe('menyu (3-bosqich)', () => {
   it('telefonda 4 ta asosiy + "Menyu", qolganlari Menyu sahifasida', () => {
     const { bottom, rest } = mobileNav('SOTUVCHI');
     expect(bottom.map((i) => i.to)).toEqual(['/', '/orders', '/customers', '/products', '/menu']);
-    expect(rest.map((i) => i.to)).toEqual(['/payments', '/settings']);
+    expect(rest.map((i) => i.to)).toEqual(['/payments', '/documents', '/settings']);
     expect(mobileNav('OMBORCHI').bottom.map((i) => i.to)).toEqual([
       '/',
       '/orders',
       '/products',
       '/purchases',
-      '/settings',
+      '/menu',
     ]);
     renderWithStore(<MenuPage />, { user: makeUser({ role: 'SOTUVCHI' }) });
     expect(screen.getByRole('link', { name: "To'lovlar" })).toBeInTheDocument();

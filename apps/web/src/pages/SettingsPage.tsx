@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
+  DOC_LOCALES,
   type OrganizationDto,
   type OrganizationSettingsInput,
   organizationSettingsSchema,
@@ -7,7 +8,8 @@ import {
   type UpdateMeInput,
   updateMeSchema,
 } from '@savdo/shared';
-import { LogOut } from 'lucide-react';
+import { LogOut, Send } from 'lucide-react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Field } from '@/components/Field';
@@ -16,11 +18,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select } from '@/components/ui/select';
 import { useAppSelector } from '@/store';
 import {
   apiErrorKey,
   useLogoutMutation,
+  useMeQuery,
   useOrganizationQuery,
+  useTelegramLinkCodeMutation,
+  useTelegramUnlinkMutation,
   useUpdateMeMutation,
   useUpdateOrganizationMutation,
 } from '@/store/api';
@@ -52,6 +58,7 @@ export function SettingsPage() {
       </Card>
 
       <PasswordCard />
+      <TelegramCard />
       {isOwner && org && <OrganizationCard key={org.id} org={org} />}
 
       <Button variant="outline" className="justify-self-start" onClick={() => void logout()}>
@@ -140,8 +147,27 @@ function OrganizationCard({ org }: { org: OrganizationDto }) {
       address: org.address,
       markupPercent: org.markupPercent,
       advancePercent: org.advancePercent,
+      phone: org.phone,
+      director: org.director,
+      bankName: org.bankName,
+      bankAccount: org.bankAccount,
+      bankMfo: org.bankMfo,
+      docLocale: org.docLocale,
+      shartnomaPrefix: org.shartnomaPrefix,
+      hisobFakturaPrefix: org.hisobFakturaPrefix,
+      yukXatiPrefix: org.yukXatiPrefix,
+      aktPrefix: org.aktPrefix,
     },
   });
+  type TextKey = Exclude<
+    keyof OrganizationSettingsInput,
+    'markupPercent' | 'advancePercent' | 'docLocale'
+  >;
+  const text = (name: TextKey, label: string, numeric = false) => (
+    <Field id={`o-${name}`} label={label} error={errors[name]?.message}>
+      <Input id={`o-${name}`} inputMode={numeric ? 'numeric' : undefined} {...register(name)} />
+    </Field>
+  );
   const numErr = (m?: string) => (m && !m.includes('.') ? 'validation.number' : m);
 
   return (
@@ -188,6 +214,31 @@ function OrganizationCard({ org }: { org: OrganizationDto }) {
               />
             </Field>
           </div>
+          {text('phone', t('settings.phone'))}
+          {text('director', t('settings.director'))}
+          <h3 className="pt-2 text-sm font-semibold">{t('settings.bank')}</h3>
+          {text('bankName', t('settings.bankName'))}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-[2fr_1fr]">
+            {text('bankAccount', t('settings.bankAccount'), true)}
+            {text('bankMfo', t('settings.bankMfo'), true)}
+          </div>
+          <h3 className="pt-2 text-sm font-semibold">{t('settings.documents')}</h3>
+          <Field id="o-docLocale" label={t('settings.docLocale')}>
+            <Select id="o-docLocale" {...register('docLocale')}>
+              {DOC_LOCALES.map((l) => (
+                <option key={l} value={l}>
+                  {t(`language.${l}`)}
+                </option>
+              ))}
+            </Select>
+          </Field>
+          <div className="grid grid-cols-2 gap-3">
+            {text('shartnomaPrefix', t('documents.types.SHARTNOMA'))}
+            {text('hisobFakturaPrefix', t('documents.types.HISOB_FAKTURA'))}
+            {text('yukXatiPrefix', t('documents.types.YUK_XATI'))}
+            {text('aktPrefix', t('documents.types.AKT'))}
+          </div>
+          <p className="text-xs text-muted-foreground">{t('settings.prefixHint')}</p>
           {error && (
             <p className="text-sm text-destructive" role="alert">
               {t(apiErrorKey(error))}
@@ -198,6 +249,78 @@ function OrganizationCard({ org }: { org: OrganizationDto }) {
             {t('common.save')}
           </Button>
         </form>
+      </CardContent>
+    </Card>
+  );
+}
+
+function TelegramCard() {
+  const { t } = useTranslation();
+  const linked = useAppSelector((s) => s.auth.user?.telegramLinked ?? false);
+  const [getCode, codeState] = useTelegramLinkCodeMutation();
+  const [unlink, unlinkState] = useTelegramUnlinkMutation();
+  const [poll, setPoll] = useState(false);
+  // Kod olingach bot orqali ulanganini bilish uchun /auth/me so'rab turiladi
+  useMeQuery(undefined, { pollingInterval: poll && !linked ? 5000 : 0, skip: !poll });
+  const link = codeState.data;
+  const err = codeState.error ?? unlinkState.error;
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{t('telegram.title')}</CardTitle>
+      </CardHeader>
+      <CardContent className="grid gap-3 text-sm">
+        {linked ? (
+          <>
+            <p className="text-primary">{t('telegram.linked')}</p>
+            <Button
+              variant="outline"
+              className="justify-self-start"
+              onClick={() => void unlink().then(() => setPoll(true))}
+              disabled={unlinkState.isLoading}
+            >
+              {t('telegram.unlink')}
+            </Button>
+          </>
+        ) : (
+          <>
+            <p className="text-muted-foreground">{t('telegram.hint')}</p>
+            {link && (
+              <div className="grid gap-2 rounded-md border p-3">
+                <p>
+                  {t('telegram.code')}:{' '}
+                  <span className="font-mono text-lg font-semibold tracking-widest">
+                    {link.code}
+                  </span>
+                </p>
+                <p className="break-words font-mono text-xs">/start {link.code}</p>
+                <p className="text-xs text-muted-foreground">{t('telegram.expires')}</p>
+                {link.deepLink && (
+                  <Button asChild className="justify-self-start">
+                    <a href={link.deepLink} target="_blank" rel="noreferrer">
+                      <Send />
+                      {t('telegram.openBot', { bot: `@${link.botUsername}` })}
+                    </a>
+                  </Button>
+                )}
+              </div>
+            )}
+            <Button
+              variant={link ? 'outline' : 'default'}
+              className="justify-self-start"
+              onClick={() => void getCode().then(() => setPoll(true))}
+              disabled={codeState.isLoading}
+            >
+              {link ? t('telegram.newCode') : t('telegram.link')}
+            </Button>
+          </>
+        )}
+        {err && (
+          <p className="text-sm text-destructive" role="alert">
+            {t(apiErrorKey(err))}
+          </p>
+        )}
       </CardContent>
     </Card>
   );

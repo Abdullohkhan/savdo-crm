@@ -18,6 +18,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useParams } from 'react-router';
 import { Badge, ErrorText, PageHeader } from '@/components/common';
+import { DocumentsBlock } from '@/components/DocumentsBlock';
 import { OrderStatusBadge, OrderStepper } from '@/components/OrderStatus';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -127,6 +128,8 @@ export function OrderPage() {
       <ErrorText error={actionState.error} />
 
       <PaymentsCard order={o} role={role} />
+
+      <DocumentsBlock order={o} />
 
       {o.status === 'JONATILDI' && has(role, COMPLETE_ROLES) && <CompleteBox order={o} />}
 

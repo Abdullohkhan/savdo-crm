@@ -40,7 +40,9 @@ describe('til', () => {
     expect((await screen.findAllByText('Settings')).length).toBeGreaterThan(0);
     expect(screen.queryByText('Sozlamalar')).not.toBeInTheDocument();
 
-    const req = fetchMock.mock.calls.at(0)?.at(0) as unknown as Request | undefined;
+    const req = fetchMock.mock.calls
+      .map((c) => c.at(0) as unknown as Request)
+      .find((r) => r.url.endsWith('/users/me'));
     expect(req?.url).toMatch(/\/users\/me$/);
     expect(req?.method).toBe('PATCH');
   });

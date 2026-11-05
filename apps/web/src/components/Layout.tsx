@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { useLogoutMutation } from '@/store/api';
 import { useAppSelector } from '@/store';
 import { mobileNav, visibleNav } from './nav';
+import { NotificationBell } from './NotificationBell';
 import { LanguageSwitcher, ThemeSwitcher } from './Switchers';
 import { Button } from './ui/button';
 
@@ -47,7 +48,8 @@ export function Layout() {
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-10 flex items-center gap-2 border-b bg-background/95 px-4 py-2 backdrop-blur">
           <span className="whitespace-nowrap font-semibold md:hidden">{t('app.name')}</span>
-          <div className="ml-auto flex gap-2">
+          <div className="ml-auto flex items-center gap-2">
+            <NotificationBell />
             <ThemeSwitcher className="h-9 w-auto px-2 text-sm" />
             <LanguageSwitcher className="h-9 w-auto px-2 text-sm" />
           </div>

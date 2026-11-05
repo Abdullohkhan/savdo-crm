@@ -1,6 +1,7 @@
 import {
   CATALOG_EDIT_ROLES,
   CUSTOMER_ROLES,
+  DOCUMENT_VIEW_ROLES,
   PAYMENT_RECEIVE_ROLES,
   PURCHASE_DRAFT_ROLES,
   Role,
@@ -12,10 +13,12 @@ import { Layout } from '@/components/Layout';
 import { CategoriesPage } from '@/pages/CategoriesPage';
 import { CustomerPage } from '@/pages/CustomerPage';
 import { CustomersPage } from '@/pages/CustomersPage';
+import { DocumentsPage } from '@/pages/DocumentsPage';
 import { ForbiddenPage, NotFoundPage } from '@/pages/ErrorPages';
 import { HomePage } from '@/pages/HomePage';
 import { LoginPage } from '@/pages/LoginPage';
 import { MenuPage } from '@/pages/MenuPage';
+import { NotificationsPage } from '@/pages/NotificationsPage';
 import { OrderEditorPage } from '@/pages/OrderEditorPage';
 import { OrderPage } from '@/pages/OrderPage';
 import { OrdersPage } from '@/pages/OrdersPage';
@@ -27,6 +30,7 @@ import { PurchaseEditorPage } from '@/pages/PurchaseEditorPage';
 import { PurchasesPage } from '@/pages/PurchasesPage';
 import { SettingsPage } from '@/pages/SettingsPage';
 import { SuppliersPage } from '@/pages/SuppliersPage';
+import { TemplateEditorPage } from '@/pages/TemplateEditorPage';
 import { UsersPage } from '@/pages/UsersPage';
 
 export function AppRoutes() {
@@ -42,6 +46,23 @@ export function AppRoutes() {
       >
         <Route index element={<HomePage />} />
         <Route path="menu" element={<MenuPage />} />
+        <Route path="notifications" element={<NotificationsPage />} />
+        <Route
+          path="documents"
+          element={
+            <RequireRole roles={DOCUMENT_VIEW_ROLES}>
+              <DocumentsPage />
+            </RequireRole>
+          }
+        />
+        <Route
+          path="documents/templates/:id"
+          element={
+            <RequireRole roles={[Role.OWNER]}>
+              <TemplateEditorPage />
+            </RequireRole>
+          }
+        />
         <Route path="orders" element={<OrdersPage />} />
         <Route
           path="orders/new"

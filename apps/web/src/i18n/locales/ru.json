@@ -13,7 +13,8 @@
     "orders": "Заказы",
     "customers": "Клиенты",
     "payments": "Платежи",
-    "menu": "Меню"
+    "menu": "Меню",
+    "documents": "Документы"
   },
   "theme": {
     "label": "Тема",
@@ -86,7 +87,16 @@
     "address": "Адрес",
     "markupPercent": "Наценка, %",
     "advancePercent": "Аванс, %",
-    "saved": "Сохранено"
+    "saved": "Сохранено",
+    "phone": "Телефон",
+    "director": "Руководитель (ФИО)",
+    "bank": "Банковские реквизиты",
+    "bankName": "Банк",
+    "bankAccount": "Расчётный счёт (20 цифр)",
+    "bankMfo": "МФО",
+    "documents": "Документы",
+    "docLocale": "Язык документов",
+    "prefixHint": "Формат номера: ПРЕФИКС-ГОД-0001 (например SH-2026-0001)."
   },
   "common": {
     "save": "Сохранить",
@@ -102,7 +112,8 @@
     "inactive": "Неактивен",
     "activate": "Активировать",
     "deactivate": "Деактивировать",
-    "currency": "сум"
+    "currency": "сум",
+    "all": "Все"
   },
   "errors": {
     "notFoundTitle": "Страница не найдена",
@@ -124,7 +135,10 @@
     "quantityDecimals": "Не более 3 знаков после запятой",
     "reasonRequired": "Укажите причину (мин. 3 символа)",
     "duplicateProduct": "Один товар добавлен дважды",
-    "date": "Неверная дата"
+    "date": "Неверная дата",
+    "bankAccount": "Расчётный счёт — 20 цифр",
+    "bankMfo": "МФО — 5 цифр",
+    "docPrefix": "Только латинские буквы и цифры, до 10"
   },
   "units": {
     "dona": "шт",
@@ -324,7 +338,8 @@
     "paymentsPending": "Есть неподтверждённые платежи",
     "priceApprovalRequired": "Нужно согласие владельца на цену ниже себестоимости",
     "productNotFound": "Товар не найден или неактивен",
-    "wrongStatus": "Это действие недоступно на этом этапе"
+    "wrongStatus": "Это действие недоступно на этом этапе",
+    "actNotSigned": "Акт не подписан — сначала отметьте акт как подписанный"
   },
   "payments": {
     "title": "Платежи",
@@ -340,5 +355,133 @@
     "exceedsDue": "Сумма больше остатка",
     "notPending": "Платёж уже обработан",
     "nothingDue": "Оплачивать нечего"
+  },
+  "telegram": {
+    "title": "Telegram",
+    "hint": "Подключите бота, чтобы получать уведомления в Telegram.",
+    "link": "Подключить Telegram",
+    "newCode": "Новый код",
+    "code": "Код",
+    "expires": "Код действует 10 минут и используется один раз. Отправьте боту:",
+    "openBot": "Открыть {{bot}}",
+    "linked": "Telegram подключён ✓",
+    "unlink": "Отключить"
+  },
+  "documents": {
+    "title": "Документы",
+    "empty": "Документов нет",
+    "view": "Открыть PDF",
+    "download": "Скачать",
+    "markSigned": "Подписан",
+    "signedBy": "подписал: {{name}}",
+    "actHint": "Чтобы завершить заказ, акт должен быть подписан.",
+    "cancelledCount": "Отменённые: {{count}}",
+    "type": "Тип",
+    "from": "С даты",
+    "to": "По дату",
+    "tab": {
+      "documents": "Документы",
+      "templates": "Шаблоны"
+    },
+    "alreadySigned": "Подписанный документ нельзя пересоздать",
+    "wrongStatus": "Статус документа не позволяет это действие",
+    "status": {
+      "YARATILDI": "Создан",
+      "IMZOLANDI": "Подписан",
+      "BEKOR": "Отменён"
+    },
+    "types": {
+      "SHARTNOMA": "Договор",
+      "HISOB_FAKTURA": "Счёт-фактура",
+      "YUK_XATI": "Накладная",
+      "AKT": "Акт"
+    },
+    "regenerate": {
+      "SHARTNOMA": "Пересоздать договор",
+      "HISOB_FAKTURA": "Пересоздать счёт-фактуру",
+      "YUK_XATI": "Пересоздать накладную",
+      "AKT": "Пересоздать акт"
+    }
+  },
+  "templates": {
+    "new": "Новый шаблон",
+    "default": "Основной",
+    "name": "Название",
+    "html": "HTML",
+    "htmlHint": "Разрешено: h1–h3, p, b, i, u, br, hr, table (colspan, width), ul/ol. Выравнивание: class=\"right|center\"; таблица без рамок: class=\"plain\". Скрипты запрещены.",
+    "makeDefault": "Сделать основным",
+    "preview": "Предпросмотр",
+    "versionHint": "При сохранении версия увеличивается. Созданные документы не меняются.",
+    "variables": "Переменные",
+    "unsafe": "В шаблоне запрещённый код (скрипт, on*-атрибуты, вывод в тройных скобках и т.п.)",
+    "syntax": "Ошибка синтаксиса шаблона",
+    "defaultRequired": "Нельзя снять основной шаблон — сделайте основным другой",
+    "vars": {
+      "org": {
+        "name": "название компании",
+        "inn": "ИНН компании",
+        "address": "адрес компании",
+        "phone": "телефон компании",
+        "director": "руководитель",
+        "bankName": "банк",
+        "bankAccount": "расчётный счёт",
+        "bankMfo": "МФО"
+      },
+      "customer": {
+        "name": "клиент",
+        "inn": "ИНН клиента",
+        "address": "адрес клиента",
+        "phone": "телефон клиента"
+      },
+      "document": {
+        "number": "номер документа",
+        "date": "дата документа"
+      },
+      "order": {
+        "number": "номер заказа",
+        "date": "дата заказа"
+      },
+      "seller": {
+        "name": "продавец"
+      },
+      "lines": {
+        "_": "таблица строк",
+        "n": "№ строки",
+        "name": "наименование",
+        "sku": "артикул",
+        "unit": "ед.",
+        "quantity": "количество",
+        "price": "цена",
+        "total": "сумма строки"
+      },
+      "total": "итого",
+      "totalWords": "итого прописью",
+      "advancePercent": "аванс %",
+      "advance": "сумма аванса",
+      "advanceWords": "аванс прописью",
+      "paid": "оплачено",
+      "remaining": "остаток",
+      "contract": {
+        "number": "номер договора",
+        "date": "дата договора"
+      }
+    }
+  },
+  "notifications": {
+    "title": "Уведомления",
+    "empty": "Уведомлений нет",
+    "readAll": "Прочитать все",
+    "bell": "Уведомления: непрочитанных {{count}}",
+    "types": {
+      "ORDER_AWAITING_ADVANCE": "Заказ #{{orderNumber}} ({{customerName}}) ожидает аванс: {{advance}} сум",
+      "ORDER_TO_PICK": "Заказ #{{orderNumber}} ({{customerName}}) готов к сборке",
+      "ORDER_SHIPPED": "Заказ #{{orderNumber}} ({{customerName}}) отгружен — подпишите акт и завершите",
+      "PAYMENT_TO_CONFIRM": "Заказ #{{orderNumber}}: оплата {{amount}} сум ждёт подтверждения",
+      "PAYMENT_REJECTED": "Заказ #{{orderNumber}}: оплата {{amount}} сум отклонена — {{reason}}",
+      "PRICE_APPROVAL": "Заказ #{{orderNumber}} ({{sellerName}}): нужна санкция на цену ниже себестоимости",
+      "DEBT_DUE_SOON": "Скоро срок долга: {{customerName}}, #{{orderNumber}}, {{remaining}} сум, {{dueDate}}",
+      "DEBT_OVERDUE": "Долг просрочен: {{customerName}}, #{{orderNumber}}, {{remaining}} сум, {{dueDate}}",
+      "LOW_STOCK": "Товаров с низким остатком: {{count}}"
+    }
   }
 }
