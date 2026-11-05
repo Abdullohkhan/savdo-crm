@@ -5,9 +5,8 @@ Sana: 2026-11-04. Mijoz: **Atoyo** (kompyuter yig'ib sotadi, hozir 1C ishlatadi)
 Qoida: ERP'dagi funksiyalar **g'oya** sifatida olinadi. ERP kodi, nomlari, ekranlari va dizayni ko'chirilmaydi —
 rollar va jarayonlar savdo-crm spec'iga (`docs/spec.md`) moslab qayta ishlab chiqiladi.
 
-> ⚠️ **Manba cheklovi.** `Abdullohkhan/erp` repo'si bu sessiyaga ulanmadi (`add_repo` ruxsati rad etildi), shuning uchun
-> ERP kodi (README, `docs/`, `schema.prisma`, `backend/src`) o'qilmadi. Jadval topshiriqdagi ERP funksiyalari ro'yxati asosida tuzildi.
-> ERP repo ochilgach, "Tekshirish" ustunidagi ✱ belgili qatorlar ERP kodi bilan solishtirilishi kerak (5-bosqich promptida birinchi qadam).
+> ERP funksiyalari endi `docs/erp-funksiyalar.md` da (ERP kodidan olingan tavsif, commit `7683ed5`). ✱ qatorlar shu fayl bilan solishtiriladi —
+> ERP repo boshqa akkauntga o'tadi, unga qaytilmaydi.
 
 ---
 
